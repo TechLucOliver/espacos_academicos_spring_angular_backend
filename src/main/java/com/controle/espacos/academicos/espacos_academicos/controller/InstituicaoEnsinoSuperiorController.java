@@ -1,5 +1,6 @@
 package com.controle.espacos.academicos.espacos_academicos.controller;
 
+import com.controle.espacos.academicos.espacos_academicos.dto.InstituicaoEnsinoSuperiorRequestDTO;
 import com.controle.espacos.academicos.espacos_academicos.dto.InstituicaoEnsinoSuperiorResponseDTO;
 import com.controle.espacos.academicos.espacos_academicos.service.InstituicaoEnsinoSuperiorService;
 import jakarta.validation.Valid;
@@ -36,12 +37,12 @@ public class InstituicaoEnsinoSuperiorController {
     /**
      * Endpoint para registar uma nova instituição de ensino.
      *
-     * @param responseDTO Objeto contendo os dados validados da nova instituição.
+     * @param requestDTO Objeto contendo os dados validados da nova instituição.
      * @return {@link ResponseEntity} com a instituição cadastrada e status HTTP 201 (Created).
      */
     @PostMapping
-    public ResponseEntity<InstituicaoEnsinoSuperiorResponseDTO> cadastrar(@Valid @RequestBody InstituicaoEnsinoSuperiorResponseDTO responseDTO){
-        InstituicaoEnsinoSuperiorResponseDTO responseCriada = iesService.cadastrar(responseDTO);
+    public ResponseEntity<InstituicaoEnsinoSuperiorResponseDTO> cadastrar(@Valid @RequestBody InstituicaoEnsinoSuperiorRequestDTO requestDTO){
+        InstituicaoEnsinoSuperiorResponseDTO responseCriada = iesService.cadastrar(requestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseCriada);
     }
 

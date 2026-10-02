@@ -1,5 +1,6 @@
 package com.controle.espacos.academicos.espacos_academicos.service;
 
+import com.controle.espacos.academicos.espacos_academicos.dto.InstituicaoEnsinoSuperiorRequestDTO;
 import com.controle.espacos.academicos.espacos_academicos.dto.InstituicaoEnsinoSuperiorResponseDTO;
 import com.controle.espacos.academicos.espacos_academicos.enums.StatusCadastro;
 import com.controle.espacos.academicos.espacos_academicos.model.InstituicaoEnsinoSuperior;
@@ -37,22 +38,22 @@ public class InstituicaoEnsinoSuperiorService {
      * Valida previamente se a sigla informada já não se encontra em uso no sistema.
      * </p>
      *
-     * @param responseDTO Dados de entrada submetidos pelo utilizador.
+     * @param requestDTO Dados de entrada submetidos pelo utilizador.
      * @return A instituição persistida convertida em DTO de resposta.
      * @throws IllegalArgumentException Caso a sigla informada já esteja registada.
      */
     @Transactional
-    public InstituicaoEnsinoSuperiorResponseDTO cadastrar(InstituicaoEnsinoSuperiorResponseDTO responseDTO){
-        if (iesRepositorio.existsBySiglaIgnoreCase(responseDTO.sigla())){
+    public InstituicaoEnsinoSuperiorResponseDTO cadastrar(InstituicaoEnsinoSuperiorRequestDTO requestDTO){
+        if (iesRepositorio.existsBySiglaIgnoreCase(requestDTO.sigla())){
             throw new IllegalArgumentException("Já existe uma IES cadastrada com a sigla informada.");
         }
 
         InstituicaoEnsinoSuperior novaIES = InstituicaoEnsinoSuperior.builder()
-                .sigla(responseDTO.sigla().toUpperCase())
-                .nome(responseDTO.nome())
-                .emailCentral(responseDTO.emailCentral())
-                .telefoneCentral(responseDTO.telefoneCentral())
-                .nomeReitor(responseDTO.nomeReitor())
+                .sigla(requestDTO.sigla().toUpperCase())
+                .nome(requestDTO.nome())
+                .emailCentral(requestDTO.emailCentral())
+                .telefoneCentral(requestDTO.telefoneCentral())
+                .nomeReitor(requestDTO.nomeReitor())
                 .build();
 
         InstituicaoEnsinoSuperior salva = iesRepositorio.save(novaIES);
