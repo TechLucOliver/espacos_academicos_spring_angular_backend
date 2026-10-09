@@ -78,4 +78,16 @@ public class InstituicaoEnsinoSuperiorController {
         iesService.inativar(id);
         return ResponseEntity.noContent().build();
     }
+
+    /**
+     * Endpoint para reativação do cadastro de uma IES.
+     *
+     * @param id Identificador da instituição.
+     * @return Resposta sem corpo com código HTTP 204 (No Content).
+     */
+    @PatchMapping("/{id}/reativar")
+    public ResponseEntity<Void> reativar(@PathVariable Long id) {
+        iesService.reativar(id);
+        return ResponseEntity.noContent().build();
+    }
 }

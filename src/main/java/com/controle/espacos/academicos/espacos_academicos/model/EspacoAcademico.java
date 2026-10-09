@@ -1,5 +1,6 @@
 package com.controle.espacos.academicos.espacos_academicos.model;
 
+import com.controle.espacos.academicos.espacos_academicos.enums.StatusCadastro;
 import com.controle.espacos.academicos.espacos_academicos.enums.StatusEspaco;
 import com.controle.espacos.academicos.espacos_academicos.enums.TipoEspaco;
 import jakarta.persistence.*;

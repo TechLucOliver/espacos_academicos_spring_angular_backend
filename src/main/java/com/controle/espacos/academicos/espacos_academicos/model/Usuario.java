@@ -106,6 +106,22 @@ public class Usuario {
     }
 
     /**
+     * Reativa o cadastro do usuário no sistema caso ele esteja inativo.
+     * <p>
+     * Limpa o motivo da inativação anterior e restabelece o status ATIVO.
+     * </p>
+     *
+     * @throws IllegalStateException se o usuário já estiver ativo no momento da operação.
+     */
+    public void reativar() {
+        if (this.status == StatusCadastro.ATIVO) {
+            throw new IllegalStateException("O usuário já está com o cadastro ativo.");
+        }
+        this.status = StatusCadastro.ATIVO;
+        this.motivoInativacao = null;
+    }
+
+    /**
      * Verifica se o usuário detém determinado papel de segurança.
      *
      * @param perfil Perfil a ser checado.

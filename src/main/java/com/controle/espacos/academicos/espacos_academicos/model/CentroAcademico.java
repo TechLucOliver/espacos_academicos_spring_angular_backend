@@ -81,9 +81,26 @@ public class CentroAcademico {
     }
 
     /**
-     * Executa a inativação lógica do Centro Acadêmico.
+     * Inativa o cadastro do Centro Acadêmico no sistema.
+     *
+     * @throws IllegalStateException se o centro já estiver com o cadastro inativo.
      */
     public void inativar(){
+        if (this.status == StatusCadastro.INATIVO){
+            throw new IllegalStateException("O Centro Academico ja está com o cadastro inativo");
+        }
         this.status = StatusCadastro.INATIVO;
+    }
+
+    /**
+     * Reativa o cadastro do Centro Acadêmico no sistema.
+     *
+     * @throws IllegalStateException se o centro já estiver com o cadastro ativo.
+     */
+    public void reativar(){
+        if(this.status == StatusCadastro.ATIVO){
+            throw new IllegalStateException("O Centro Academico ja está com o cadastro ativo");
+        }
+        this.status = StatusCadastro.ATIVO;
     }
 }

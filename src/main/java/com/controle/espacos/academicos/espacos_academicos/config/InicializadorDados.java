@@ -1,7 +1,9 @@
 package com.controle.espacos.academicos.espacos_academicos.config;
 
 import com.controle.espacos.academicos.espacos_academicos.enums.StatusCadastro;
+import com.controle.espacos.academicos.espacos_academicos.model.CentroAcademico;
 import com.controle.espacos.academicos.espacos_academicos.model.InstituicaoEnsinoSuperior;
+import com.controle.espacos.academicos.espacos_academicos.repository.CentroAcademicoRepository;
 import com.controle.espacos.academicos.espacos_academicos.repository.InstituicaoEnsinoSuperiorRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
@@ -22,13 +24,13 @@ public class InicializadorDados {
      * @return Instância de {@link CommandLineRunner} executada no bootstrap do Spring.
      */
     @Bean
-    CommandLineRunner iniciarDB(InstituicaoEnsinoSuperiorRepository iesRepositorio){
+    CommandLineRunner iniciarDB(InstituicaoEnsinoSuperiorRepository iesRepositorio, CentroAcademicoRepository centroAcademicoRepository){
         return args -> {
           if (iesRepositorio.count() == 0){
               InstituicaoEnsinoSuperior ucsal = InstituicaoEnsinoSuperior.builder()
                       .sigla("UCSAL")
                       .nome("Universidade Católica do Salvador")
-                      .emailCentral("coordenaçao@ucsal.br")
+                      .emailCentral("coordenaçao@ucsal.edu.br")
                       .telefoneCentral("71999998888")
                       .nomeReitor("Oswaldo")
                       .status(StatusCadastro.ATIVO)
@@ -36,6 +38,18 @@ public class InicializadorDados {
 
               iesRepositorio.save(ucsal);
               System.out.println("Banco de dados iniciado com sucesso, IES "+ucsal.getSigla()+" cadastrada com sucesso");
+
+              CentroAcademico ccet = CentroAcademico.builder()
+                      .nome("Escola de Exatas e Tecnologia")
+                      .emailCentral("ccet@ucsal.edu.br")
+                      .telefoneCentral("71977775555")
+                      .nomeCoordenador("Prof. Asdrubal")
+                      .instituicao(ucsal)
+                      .status(StatusCadastro.ATIVO)
+                      .build();
+
+              centroAcademicoRepository.save(ccet);
+              System.out.println("IES e Centro Academico devidamente cadastrados e lincados");
           }
         };
     }

@@ -75,9 +75,26 @@ public class Curso {
     }
 
     /**
-     * Inativa logicamente o curso.
+     * Inativa a oferta e o cadastro do curso na instituição.
+     *
+     * @throws IllegalStateException se o curso já estiver inativo.
      */
     public void inativar(){
+        if (this.status == StatusCadastro.INATIVO) {
+            throw new IllegalStateException("O curso já se encontra inativo.");
+        }
         this.status = StatusCadastro.INATIVO;
+    }
+
+    /**
+     * Reativa a oferta e o cadastro do curso na instituição.
+     *
+     * @throws IllegalStateException se o curso já estiver ativo.
+     */
+    public void reativar() {
+        if (this.status == StatusCadastro.ATIVO) {
+            throw new IllegalStateException("O curso já se encontra ativo.");
+        }
+        this.status = StatusCadastro.ATIVO;
     }
 }

@@ -98,7 +98,22 @@ public class InstituicaoEnsinoSuperiorService {
         InstituicaoEnsinoSuperior ies = iesRepositorio.findById(id)
                 .orElseThrow(() -> new RuntimeException("IES não encontrada com o id: "+id));
 
-        ies.setStatus(StatusCadastro.INATIVO);
+        ies.inativar();
+        iesRepositorio.save(ies);
+    }
+
+    /**
+     * Reativa uma Instituição de Ensino Superior previamente inativada.
+     *
+     * @param id Identificador numérico da IES.
+     * @throws RuntimeException se a IES não for encontrada.
+     */
+    @Transactional
+    public void reativar(Long id) {
+        InstituicaoEnsinoSuperior ies = iesRepositorio.findById(id)
+                .orElseThrow(() -> new RuntimeException("IES não encontrada com o ID: " + id));
+
+        ies.reativar();
         iesRepositorio.save(ies);
     }
 }

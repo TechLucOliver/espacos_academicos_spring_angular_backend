@@ -96,9 +96,26 @@ public class InstituicaoEnsinoSuperior {
     }
 
     /**
-     * Realiza a inativação lógica da IES no sistema.
+     * Inativa o cadastro da Instituição de Ensino Superior no sistema.
+     *
+     * @throws IllegalStateException se a instituição já estiver com o cadastro inativo.
      */
     public void inativar(){
+        if (this.status == StatusCadastro.INATIVO) {
+            throw new IllegalStateException("A instituição já se está inativa.");
+        }
         this.status = StatusCadastro.INATIVO;
+    }
+
+    /**
+     * Reativa o cadastro da Instituição de Ensino Superior no sistema.
+     *
+     * @throws IllegalStateException se a instituição já estiver com o cadastro ativo.
+     */
+    public void reativar() {
+        if (this.status == StatusCadastro.ATIVO) {
+            throw new IllegalStateException("A instituição já se está ativa.");
+        }
+        this.status = StatusCadastro.ATIVO;
     }
 }
