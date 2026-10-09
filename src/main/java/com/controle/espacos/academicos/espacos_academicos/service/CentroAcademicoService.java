@@ -1,7 +1,7 @@
 package com.controle.espacos.academicos.espacos_academicos.service;
 
-import com.controle.espacos.academicos.espacos_academicos.dto.CentroAcademicoRequestDTO;
-import com.controle.espacos.academicos.espacos_academicos.dto.CentroAcademicoResponseDTO;
+import com.controle.espacos.academicos.espacos_academicos.dto.centro_academico.CentroAcademicoRequestDTO;
+import com.controle.espacos.academicos.espacos_academicos.dto.centro_academico.CentroAcademicoResponseDTO;
 import com.controle.espacos.academicos.espacos_academicos.enums.StatusCadastro;
 import com.controle.espacos.academicos.espacos_academicos.model.CentroAcademico;
 import com.controle.espacos.academicos.espacos_academicos.model.InstituicaoEnsinoSuperior;
@@ -55,6 +55,35 @@ public class CentroAcademicoService {
 
         CentroAcademico salvo = centroAcademicoRepository.save(novoCentroAcademico);
         return CentroAcademicoResponseDTO.fromEntity(salvo);
+    }
+
+    /**
+     * Atualiza os dados de um Centro Acadêmico existente.
+     *
+     * @param id         Identificador do Centro Acadêmico.
+     * @param requestDTO Novos dados validados.
+     * @return DTO de resposta do CA atualizado.
+     */
+    @Transactional
+    public CentroAcademicoResponseDTO editar(Long id, CentroAcademicoRequestDTO requestDTO){
+        CentroAcademico centroAcademico = centroAcademicoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Centro Academico não encontrado com id: "+id));
+
+        if (centroAcademicoRepository.existsByNomeIgnoreCaseAndInstituicaoIdAndIdNot(requestDTO.nome(), requestDTO.iesId(), id)){
+            throw new IllegalArgumentException("Já existe outro CentroAcademico com o nome: "+requestDTO.nome());
+        }
+
+        InstituicaoEnsinoSuperior instituicao = iesRepository.findById(requestDTO.iesId())
+                .orElseThrow(() -> new RuntimeException("Instituição não encontrada com o id: "+requestDTO.iesId()));
+
+        centroAcademico.setNome(requestDTO.nome());
+        centroAcademico.setEmailCentral(requestDTO.emailCentral());
+        centroAcademico.setTelefoneCentral(requestDTO.telefoneCentral());
+        centroAcademico.setNomeCoordenador(requestDTO.nomeCoordenador());
+        centroAcademico.setInstituicao(instituicao);
+
+        CentroAcademico centroAtualizado = centroAcademicoRepository.save(centroAcademico);
+        return CentroAcademicoResponseDTO.fromEntity(centroAtualizado);
     }
 
     /**

@@ -39,4 +39,15 @@ public interface CentroAcademicoRepository extends JpaRepository<CentroAcademico
      * @return {@code true} se já houver duplicidade na mesma instituição, senão {@code false}.
      */
     boolean existsByNomeIgnoreCaseAndInstituicaoId(String nome, Long iesId);
+
+    /**
+     * Verifica se já existe outro Centro Acadêmico com o mesmo nome na mesma IES,
+     * ignorando o registro atual em edição.
+     *
+     * @param nome          Nome do Centro Acadêmico.
+     * @param instituicaoId Identificador da IES vinculada.
+     * @param id            Identificador primário do CA em edição.
+     * @return {@code true} se outro CA na mesma IES já usar esse nome; {@code false} caso contrário.
+     */
+    boolean existsByNomeIgnoreCaseAndInstituicaoIdAndIdNot(String nome, Long instituicaoId, Long id);
 }

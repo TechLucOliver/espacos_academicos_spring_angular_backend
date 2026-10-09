@@ -1,7 +1,7 @@
 package com.controle.espacos.academicos.espacos_academicos.controller;
 
-import com.controle.espacos.academicos.espacos_academicos.dto.InstituicaoEnsinoSuperiorRequestDTO;
-import com.controle.espacos.academicos.espacos_academicos.dto.InstituicaoEnsinoSuperiorResponseDTO;
+import com.controle.espacos.academicos.espacos_academicos.dto.instituicao.InstituicaoEnsinoSuperiorRequestDTO;
+import com.controle.espacos.academicos.espacos_academicos.dto.instituicao.InstituicaoEnsinoSuperiorResponseDTO;
 import com.controle.espacos.academicos.espacos_academicos.service.InstituicaoEnsinoSuperiorService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -44,6 +44,19 @@ public class InstituicaoEnsinoSuperiorController {
     public ResponseEntity<InstituicaoEnsinoSuperiorResponseDTO> cadastrar(@Valid @RequestBody InstituicaoEnsinoSuperiorRequestDTO requestDTO){
         InstituicaoEnsinoSuperiorResponseDTO responseCriada = iesService.cadastrar(requestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseCriada);
+    }
+
+    /**
+     * Endpoint para atualização cadastral dos dados de uma IES existente.
+     *
+     * @param id  Identificador numérico da IES informado na URL.
+     * @param requestDTO Novos dados validados da instituição.
+     * @return {@link ResponseEntity} com os dados atualizados e status HTTP 200 (OK).
+     */
+    @PutMapping("/{id}")
+    public ResponseEntity<InstituicaoEnsinoSuperiorResponseDTO> editar(@PathVariable Long id, @Valid @RequestBody InstituicaoEnsinoSuperiorRequestDTO requestDTO){
+        InstituicaoEnsinoSuperiorResponseDTO instituicaoAtualizada = iesService.editar(id, requestDTO);
+        return  ResponseEntity.ok(instituicaoAtualizada);
     }
 
     /**

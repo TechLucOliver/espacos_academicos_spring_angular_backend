@@ -43,4 +43,16 @@ public interface InstituicaoEnsinoSuperiorRepository extends JpaRepository<Insti
      * @return {@code true} se já existir na base, ou {@code false} caso contrário.
      */
     boolean existsBySiglaIgnoreCase(String sigla);
+
+    /**
+     * Verifica se já existe outra IES cadastrada com a mesma sigla, desconsiderando o registro com o ID informado.
+     * <p>
+     * Utilizado na edição para permitir manter a própria sigla sem acusar duplicidade com outros registros.
+     * </p>
+     *
+     * @param sigla Sigla a ser verificada.
+     * @param id    Identificador primário da instituição em edição (será ignorado na busca).
+     * @return {@code true} se outro registro já utilizar a sigla; {@code false} caso contrário.
+     */
+    boolean existsBySiglaIgnoreCaseAndIdNot(String sigla, Long id);
 }

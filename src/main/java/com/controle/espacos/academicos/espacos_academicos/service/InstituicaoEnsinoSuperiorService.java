@@ -1,8 +1,7 @@
 package com.controle.espacos.academicos.espacos_academicos.service;
 
-import com.controle.espacos.academicos.espacos_academicos.dto.InstituicaoEnsinoSuperiorRequestDTO;
-import com.controle.espacos.academicos.espacos_academicos.dto.InstituicaoEnsinoSuperiorResponseDTO;
-import com.controle.espacos.academicos.espacos_academicos.enums.StatusCadastro;
+import com.controle.espacos.academicos.espacos_academicos.dto.instituicao.InstituicaoEnsinoSuperiorRequestDTO;
+import com.controle.espacos.academicos.espacos_academicos.dto.instituicao.InstituicaoEnsinoSuperiorResponseDTO;
 import com.controle.espacos.academicos.espacos_academicos.model.InstituicaoEnsinoSuperior;
 import com.controle.espacos.academicos.espacos_academicos.repository.InstituicaoEnsinoSuperiorRepository;
 import org.springframework.stereotype.Service;
@@ -58,6 +57,32 @@ public class InstituicaoEnsinoSuperiorService {
 
         InstituicaoEnsinoSuperior salva = iesRepositorio.save(novaIES);
         return InstituicaoEnsinoSuperiorResponseDTO.fromEntity(salva);
+    }
+
+    /**
+     * Atualiza os dados cadastrais editáveis de uma IES existente.
+     *
+     * @param id Identificador da instituição a ser editada.
+     * @param requestDTO Novos dados validados.
+     * @return DTO de resposta atualizado.
+     */
+    @Transactional
+    public InstituicaoEnsinoSuperiorResponseDTO editar(Long id, InstituicaoEnsinoSuperiorRequestDTO requestDTO){
+        InstituicaoEnsinoSuperior instituicao = iesRepositorio.findById(id)
+                .orElseThrow(() -> new RuntimeException("Instituição não encontrada com o id: "+id));
+
+        if (iesRepositorio.existsBySiglaIgnoreCaseAndIdNot(requestDTO.sigla(), id)){
+            throw new IllegalArgumentException("Já existe outra Instituição cadastrada com a sigla informada");
+        }
+
+        instituicao.setSigla(requestDTO.sigla().toUpperCase());
+        instituicao.setNome(requestDTO.nome());
+        instituicao.setEmailCentral(requestDTO.emailCentral());
+        instituicao.setTelefoneCentral(requestDTO.telefoneCentral());
+        instituicao.setNomeReitor(requestDTO.nomeReitor());
+
+        InstituicaoEnsinoSuperior instituicaoAtualizada = iesRepositorio.save(instituicao);
+        return InstituicaoEnsinoSuperiorResponseDTO.fromEntity(instituicaoAtualizada);
     }
 
     /**

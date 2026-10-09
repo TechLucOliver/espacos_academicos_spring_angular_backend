@@ -1,7 +1,7 @@
 package com.controle.espacos.academicos.espacos_academicos.controller;
 
-import com.controle.espacos.academicos.espacos_academicos.dto.CentroAcademicoRequestDTO;
-import com.controle.espacos.academicos.espacos_academicos.dto.CentroAcademicoResponseDTO;
+import com.controle.espacos.academicos.espacos_academicos.dto.centro_academico.CentroAcademicoRequestDTO;
+import com.controle.espacos.academicos.espacos_academicos.dto.centro_academico.CentroAcademicoResponseDTO;
 import com.controle.espacos.academicos.espacos_academicos.service.CentroAcademicoService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -34,6 +34,19 @@ public class CentroAcademicoController {
     public ResponseEntity<CentroAcademicoResponseDTO> cadastrar(@Valid @RequestBody CentroAcademicoRequestDTO requestDTO){
         CentroAcademicoResponseDTO responseDTO = centroAcademicoService.cadastrar(requestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
+    }
+
+    /**
+     * Endpoint para atualização dos dados de um Centro Acadêmico.
+     *
+     * @param id         Identificador do centro na URL.
+     * @param requestDTO Novos dados validados.
+     * @return Dados atualizados e código HTTP 200 (OK).
+     */
+    @PutMapping("/{id}")
+    public ResponseEntity<CentroAcademicoResponseDTO> editar(@PathVariable Long id, @Valid @RequestBody CentroAcademicoRequestDTO requestDTO){
+        CentroAcademicoResponseDTO centroAtualizado = centroAcademicoService.editar(id, requestDTO);
+        return ResponseEntity.ok(centroAtualizado);
     }
 
     /**

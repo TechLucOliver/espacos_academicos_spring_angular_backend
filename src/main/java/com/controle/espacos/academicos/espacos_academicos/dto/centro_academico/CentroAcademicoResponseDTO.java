@@ -1,4 +1,4 @@
-package com.controle.espacos.academicos.espacos_academicos.dto;
+package com.controle.espacos.academicos.espacos_academicos.dto.centro_academico;
 
 import com.controle.espacos.academicos.espacos_academicos.enums.StatusCadastro;
 import com.controle.espacos.academicos.espacos_academicos.model.CentroAcademico;

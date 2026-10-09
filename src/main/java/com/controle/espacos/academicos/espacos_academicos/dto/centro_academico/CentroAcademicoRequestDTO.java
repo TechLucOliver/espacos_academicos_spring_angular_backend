@@ -1,4 +1,4 @@
-package com.controle.espacos.academicos.espacos_academicos.dto;
+package com.controle.espacos.academicos.espacos_academicos.dto.centro_academico;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
