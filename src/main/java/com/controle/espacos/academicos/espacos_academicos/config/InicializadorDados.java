@@ -1,14 +1,13 @@
 package com.controle.espacos.academicos.espacos_academicos.config;
 
-import com.controle.espacos.academicos.espacos_academicos.enums.StatusCadastro;
-import com.controle.espacos.academicos.espacos_academicos.enums.StatusEspaco;
-import com.controle.espacos.academicos.espacos_academicos.enums.TipoEspaco;
-import com.controle.espacos.academicos.espacos_academicos.enums.Turno;
+import com.controle.espacos.academicos.espacos_academicos.enums.*;
 import com.controle.espacos.academicos.espacos_academicos.model.*;
 import com.controle.espacos.academicos.espacos_academicos.repository.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.List;
 
 /**
  * Componente de configuração encarregado de semear a base de dados em memória (H2)
@@ -26,7 +25,8 @@ public class InicializadorDados {
      */
     @Bean
     CommandLineRunner iniciarDB(InstituicaoEnsinoSuperiorRepository iesRepositorio, CentroAcademicoRepository centroAcademicoRepository,
-                                CursoRepository cursoRepository, EspacoAcademicoRepository espacoRepository, LaboratorioRepository laboratorioRepository){
+                                CursoRepository cursoRepository, EspacoAcademicoRepository espacoRepository, LaboratorioRepository laboratorioRepository,
+                                SoftwareRepository softwareRepository){
         return args -> {
           if (iesRepositorio.count() == 0){
               InstituicaoEnsinoSuperior ucsal = InstituicaoEnsinoSuperior.builder()
@@ -93,6 +93,28 @@ public class InicializadorDados {
 
               laboratorioRepository.save(lab01);
               System.out.println("Laboratorio cadastrado com sucesso no centro "+lab01.getCentroAcademico());
+
+              Software vscode = Software.builder()
+                      .nome("Visual Studio Code")
+                      .urlDownload("https://code.visualstudio.com/Download")
+                      .tipo(TipoSoftware.SOFTWARE_LIVRE)
+                      .objetivoUso("Ambiente de desenvolvimento de código-fonte multiplataforma")
+                      .disciplinasVinculadas("Algoritmos, Programação Web, Engenharia de Software")
+                      .build();
+
+              Software postgre = Software.builder()
+                      .nome("PostgreSQL 16")
+                      .urlDownload("https://www.postgresql.org/download/")
+                      .tipo(TipoSoftware.SOFTWARE_LIVRE)
+                      .objetivoUso("Sistema de gerenciamento de banco de dados relacional")
+                      .disciplinasVinculadas("Banco de Dados I, Banco de Dados II")
+                      .build();
+
+              softwareRepository.saveAll(List.of(vscode, postgre));
+
+              lab01.getSoftwaresInstalados().add(vscode);
+              lab01.getSoftwaresInstalados().add(postgre);
+              laboratorioRepository.save(lab01);
           }
         };
     }

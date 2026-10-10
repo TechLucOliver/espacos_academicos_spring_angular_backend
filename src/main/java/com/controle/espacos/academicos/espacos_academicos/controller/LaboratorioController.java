@@ -2,6 +2,7 @@ package com.controle.espacos.academicos.espacos_academicos.controller;
 
 import com.controle.espacos.academicos.espacos_academicos.dto.laboratorio.LaboratorioRequestDTO;
 import com.controle.espacos.academicos.espacos_academicos.dto.laboratorio.LaboratorioResponseDTO;
+import com.controle.espacos.academicos.espacos_academicos.dto.software.SoftwareResponseDTO;
 import com.controle.espacos.academicos.espacos_academicos.service.LaboratorioService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -100,6 +101,43 @@ public class LaboratorioController {
     @PatchMapping("/{id}/liberar")
     public ResponseEntity<Void> liberarManutencao(@PathVariable Long id) {
         labService.liberarManutencao(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * Lista os softwares homologados e instalados no laboratório.
+     *
+     * @param id Identificador do laboratório.
+     * @return Lista de softwares instalados com código HTTP 200 (OK).
+     */
+    @GetMapping("/{id}/softwares")
+    public ResponseEntity<List<SoftwareResponseDTO>> listarSoftwares(@PathVariable Long id) {
+        return ResponseEntity.ok(labService.listarSoftwaresDoLaboratorio(id));
+    }
+
+    /**
+     * Vincula/instala um software às máquinas do laboratório.
+     *
+     * @param id         Identificador do laboratório.
+     * @param softwareId Identificador do software a instalar.
+     * @return Resposta sem corpo e código HTTP 204 (No Content).
+     */
+    @PostMapping("/{id}/softwares/{softwareId}")
+    public ResponseEntity<Void> instalarSoftware(@PathVariable Long id, @PathVariable Long softwareId) {
+        labService.instalarSoftware(id, softwareId);
+        return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * Remove/desinstala um software das máquinas do laboratório.
+     *
+     * @param id         Identificador do laboratório.
+     * @param softwareId Identificador do software a desinstalar.
+     * @return Resposta sem corpo e código HTTP 204 (No Content).
+     */
+    @DeleteMapping("/{id}/softwares/{softwareId}")
+    public ResponseEntity<Void> desinstalarSoftware(@PathVariable Long id, @PathVariable Long softwareId) {
+        labService.desinstalarSoftware(id, softwareId);
         return ResponseEntity.noContent().build();
     }
 }
