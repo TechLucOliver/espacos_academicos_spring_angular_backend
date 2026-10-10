@@ -4,6 +4,8 @@ import com.controle.espacos.academicos.espacos_academicos.dto.instituicao.Instit
 import com.controle.espacos.academicos.espacos_academicos.dto.instituicao.InstituicaoEnsinoSuperiorResponseDTO;
 import com.controle.espacos.academicos.espacos_academicos.service.InstituicaoEnsinoSuperiorService;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,19 +23,11 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/api/ies")
+@AllArgsConstructor 
 public class InstituicaoEnsinoSuperiorController {
 
     private final InstituicaoEnsinoSuperiorService iesService;
-
-    /**
-     * Construtor para injeção do serviço de domínio da IES.
-     *
-     * @param iesService Serviço contendo as regras de negócio de IES.
-     */
-    public InstituicaoEnsinoSuperiorController(InstituicaoEnsinoSuperiorService iesService){
-        this.iesService = iesService;
-    }
-
+    
     /**
      * Endpoint para registar uma nova instituição de ensino.
      *

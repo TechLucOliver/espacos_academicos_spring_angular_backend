@@ -115,6 +115,20 @@ public class InicializadorDados {
               lab01.getSoftwaresInstalados().add(vscode);
               lab01.getSoftwaresInstalados().add(postgre);
               laboratorioRepository.save(lab01);
+
+              ucsal.adicionarProReitoria(ProReitoria.builder()
+                      .nome("Pró-Reitoria de Graduação")
+                      .nomeResponsavel("Prof. Dr. João Silva")
+                      .instituicao(ucsal)
+                      .build());
+
+              ucsal.adicionarProReitoria(ProReitoria.builder()
+                      .nome("Pró-Reitoria de Pesquisa e Pós-Graduação")
+                      .nomeResponsavel("Prof. Dra. Maria Oliveira")
+                      .instituicao(ucsal)
+                      .build());
+
+                InstituicaoEnsinoSuperior ucsalAtualizada = iesRepositorio.save(ucsal);
           }
         };
     }

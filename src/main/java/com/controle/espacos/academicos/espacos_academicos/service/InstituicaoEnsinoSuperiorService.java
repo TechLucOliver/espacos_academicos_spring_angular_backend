@@ -4,7 +4,11 @@ import com.controle.espacos.academicos.espacos_academicos.dto.instituicao.Instit
 import com.controle.espacos.academicos.espacos_academicos.dto.instituicao.InstituicaoEnsinoSuperiorResponseDTO;
 import com.controle.espacos.academicos.espacos_academicos.enums.StatusCadastro;
 import com.controle.espacos.academicos.espacos_academicos.model.InstituicaoEnsinoSuperior;
+import com.controle.espacos.academicos.espacos_academicos.model.ProReitoria;
 import com.controle.espacos.academicos.espacos_academicos.repository.InstituicaoEnsinoSuperiorRepository;
+
+import lombok.AllArgsConstructor;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,18 +23,10 @@ import java.util.List;
  *
  */
 @Service
+@AllArgsConstructor 
 public class InstituicaoEnsinoSuperiorService {
 
     private final InstituicaoEnsinoSuperiorRepository iesRepositorio;
-
-    /**
-     * Construtor para injeção de dependência do repositório.
-     *
-     * @param iesRepositorio Repositório de persistência de IES gerido pelo Spring.
-     */
-    public InstituicaoEnsinoSuperiorService(InstituicaoEnsinoSuperiorRepository iesRepositorio){
-        this.iesRepositorio = iesRepositorio;
-    }
 
     /**
      * Realiza o registo de uma nova Instituição de Ensino Superior.
@@ -56,16 +52,34 @@ public class InstituicaoEnsinoSuperiorService {
                 .nomeReitor(requestDTO.nomeReitor())
                 .build();
 
+        if(requestDTO.proReitorias() != null && !requestDTO.proReitorias().isEmpty()){
+            requestDTO.proReitorias().forEach(proReitoriaDTO -> {
+                ProReitoria proReitoria = ProReitoria.builder()
+                        .nome(proReitoriaDTO.nome())
+                        .nomeResponsavel(proReitoriaDTO.nomeResponsavel())
+                        .instituicao(novaIES)
+                        .build();
+                novaIES.adicionarProReitoria(proReitoria);
+            });
+
+        }
+
         InstituicaoEnsinoSuperior salva = iesRepositorio.save(novaIES);
         return InstituicaoEnsinoSuperiorResponseDTO.fromEntity(salva);
     }
 
     /**
-     * Atualiza os dados cadastrais editáveis de uma IES existente.
+     * Atualiza os dados cadastrais editáveis de uma IES existente e sincroniza sua lista de pró-reitorias.
      *
+     * <p>
+     * Valida se a nova sigla não colide com outra IES existente.
+     * Graças ao orphanRemoval = true, pró-reitorias removidas da lista são excluídas do banco.
+     * </p>
      * @param id Identificador da instituição a ser editada.
      * @param requestDTO Novos dados validados.
      * @return DTO de resposta atualizado.
+     * @throws RuntimeException se a IES não for localizada pelo ID.
+     * 
      */
     @Transactional
     public InstituicaoEnsinoSuperiorResponseDTO editar(Long id, InstituicaoEnsinoSuperiorRequestDTO requestDTO){
@@ -81,6 +95,18 @@ public class InstituicaoEnsinoSuperiorService {
         instituicao.setEmailCentral(requestDTO.emailCentral());
         instituicao.setTelefoneCentral(requestDTO.telefoneCentral());
         instituicao.setNomeReitor(requestDTO.nomeReitor());
+
+        if(requestDTO.proReitorias() != null){
+            instituicao.getProReitorias().clear();
+            requestDTO.proReitorias().forEach(proReitoriaDTO -> {
+                ProReitoria proReitoria = ProReitoria.builder()
+                        .nome(proReitoriaDTO.nome())
+                        .nomeResponsavel(proReitoriaDTO.nomeResponsavel())
+                        .instituicao(instituicao)
+                        .build();
+                instituicao.adicionarProReitoria(proReitoria);
+            });
+        }
 
         InstituicaoEnsinoSuperior instituicaoAtualizada = iesRepositorio.save(instituicao);
         return InstituicaoEnsinoSuperiorResponseDTO.fromEntity(instituicaoAtualizada);
@@ -120,6 +146,7 @@ public class InstituicaoEnsinoSuperiorService {
      *
      * segue abaixo a implementação
      */
+    @Transactional (readOnly = true)
     public List<InstituicaoEnsinoSuperiorResponseDTO> listar(StatusCadastro status){
         List<InstituicaoEnsinoSuperior> lista = (status == null)
                 //cria a lista com todas as instituições caso não seja escolhido

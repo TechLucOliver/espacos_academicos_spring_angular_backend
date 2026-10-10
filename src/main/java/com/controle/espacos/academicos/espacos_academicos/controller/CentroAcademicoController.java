@@ -4,6 +4,7 @@ import com.controle.espacos.academicos.espacos_academicos.dto.centro_academico.C
 import com.controle.espacos.academicos.espacos_academicos.dto.centro_academico.CentroAcademicoResponseDTO;
 import com.controle.espacos.academicos.espacos_academicos.service.CentroAcademicoService;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,18 +13,9 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/centros-academicos")
+@AllArgsConstructor
 public class CentroAcademicoController {
     private final CentroAcademicoService centroAcademicoService;
-
-    /**
-     * Construtor para injeção do serviço de domínio de Centros Acadêmicos.
-     *
-     * @param centroAcademicoService Serviço contendo regras de negócio de Centros Acadêmicos.
-     */
-    public CentroAcademicoController(CentroAcademicoService centroAcademicoService) {
-        this.centroAcademicoService = centroAcademicoService;
-    }
-
     /**
      * Endpoint para realização de novo cadastro de Centro Acadêmico.
      *
