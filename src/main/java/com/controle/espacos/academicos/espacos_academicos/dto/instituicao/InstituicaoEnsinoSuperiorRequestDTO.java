@@ -1,8 +1,12 @@
 package com.controle.espacos.academicos.espacos_academicos.dto.instituicao;
 
+import com.controle.espacos.academicos.espacos_academicos.dto.pro_reitoria.ProReitoriaRequestDTO;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+
+import java.util.List;
 
 /**
  * Objeto de Transferência de Dados (DTO) para receção dos dados de cadastro e edição de uma IES.
@@ -36,5 +40,8 @@ public record InstituicaoEnsinoSuperiorRequestDTO(
         String telefoneCentral,
 
         @NotBlank(message = "Informar o nome do reitor é obrigatório")
-        String nomeReitor
+        String nomeReitor,
+
+        @Valid
+        List<ProReitoriaRequestDTO> proReitorias
 ) { }

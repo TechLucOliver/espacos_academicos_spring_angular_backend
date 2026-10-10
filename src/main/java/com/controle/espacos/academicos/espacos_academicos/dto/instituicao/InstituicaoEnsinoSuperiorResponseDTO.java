@@ -1,9 +1,11 @@
 package com.controle.espacos.academicos.espacos_academicos.dto.instituicao;
 
+import com.controle.espacos.academicos.espacos_academicos.dto.pro_reitoria.ProReitoriaResponseDTO;
 import com.controle.espacos.academicos.espacos_academicos.enums.StatusCadastro;
 import com.controle.espacos.academicos.espacos_academicos.model.InstituicaoEnsinoSuperior;
 
 import java.time.LocalDate;
+import java.util.List;
 
 /**
  * Objeto de Transferência de Dados (DTO) para envio dos dados da IES nas respostas da API.
@@ -28,7 +30,8 @@ public record InstituicaoEnsinoSuperiorResponseDTO(
     String telefoneCentral,
     String nomeReitor,
     LocalDate dataCadastramento,
-    StatusCadastro status
+    StatusCadastro status,
+    List<ProReitoriaResponseDTO> proReitorias
 ) {
     /**
      * Método de conveniência que converte a entidade JPA {@link InstituicaoEnsinoSuperior}
@@ -38,8 +41,12 @@ public record InstituicaoEnsinoSuperiorResponseDTO(
      * @return Instância de {@link InstituicaoEnsinoSuperiorResponseDTO} populada.
      */
     public static InstituicaoEnsinoSuperiorResponseDTO fromEntity(InstituicaoEnsinoSuperior ies){
+        List<ProReitoriaResponseDTO> listaReitorias = ies.getProReitorias() != null
+                ? ies.getProReitorias().stream().map(ProReitoriaResponseDTO::fromEntity).toList()
+                : List.of();
+
         return  new InstituicaoEnsinoSuperiorResponseDTO(
-          ies.getId(), ies.getSigla(), ies.getNome(), ies.getEmailCentral(), ies.getTelefoneCentral(), ies.getNomeReitor(), ies.getDataCadastramento(), ies.getStatus()
+          ies.getId(), ies.getSigla(), ies.getNome(), ies.getEmailCentral(), ies.getTelefoneCentral(), ies.getNomeReitor(), ies.getDataCadastramento(), ies.getStatus(), listaReitorias
         );
     }
 }

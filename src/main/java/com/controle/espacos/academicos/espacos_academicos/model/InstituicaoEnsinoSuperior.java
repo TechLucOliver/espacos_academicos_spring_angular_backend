@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Entidade de domínio que representa uma Instituição de Ensino Superior (IES).
@@ -80,6 +82,11 @@ public class InstituicaoEnsinoSuperior {
     @Column(nullable = false, length = 20)
     private StatusCadastro status;
 
+    /** Coleção de pró-reitorias e nomeações vinculadas a esta IES. */
+    @OneToMany(mappedBy = "instituicao", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<ProReitoria> proReitorias = new ArrayList<>();
+
     /**
      * Gatilho de ciclo de vida JPA disparado imediatamente antes da execução do {@code INSERT}.
      * Garante o preenchimento automático da data de criação e do status inicial ativo,
@@ -93,6 +100,14 @@ public class InstituicaoEnsinoSuperior {
         if (this.status == null){
             this.status = StatusCadastro.ATIVO;
         }
+    }
+
+    public void adicionarProReitoria(ProReitoria proReitoria){
+        if (this.proReitorias == null){
+            this.proReitorias = new ArrayList<>();
+        }
+        this.proReitorias.add(proReitoria);
+        proReitoria.setInstituicao(this);
     }
 
     /**
