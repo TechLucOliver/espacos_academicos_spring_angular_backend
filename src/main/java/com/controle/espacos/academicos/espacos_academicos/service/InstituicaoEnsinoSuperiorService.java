@@ -2,6 +2,7 @@ package com.controle.espacos.academicos.espacos_academicos.service;
 
 import com.controle.espacos.academicos.espacos_academicos.dto.instituicao.InstituicaoEnsinoSuperiorRequestDTO;
 import com.controle.espacos.academicos.espacos_academicos.dto.instituicao.InstituicaoEnsinoSuperiorResponseDTO;
+import com.controle.espacos.academicos.espacos_academicos.enums.StatusCadastro;
 import com.controle.espacos.academicos.espacos_academicos.model.InstituicaoEnsinoSuperior;
 import com.controle.espacos.academicos.espacos_academicos.repository.InstituicaoEnsinoSuperiorRepository;
 import org.springframework.stereotype.Service;
@@ -111,6 +112,26 @@ public class InstituicaoEnsinoSuperiorService {
                 .map(InstituicaoEnsinoSuperiorResponseDTO::fromEntity)
                 .toList();
     }
+    /**
+     * Uma alternativa para as consultas. A consulta listarTodas inclui as
+     * instituição inativas, poderia ser melhorada com o uso de um caixa, ou
+     * duas, no front onde poderia ser escolhido instituições ativas, inativas ou
+     * todas
+     *
+     * segue abaixo a implementação
+     */
+    public List<InstituicaoEnsinoSuperiorResponseDTO> listar(StatusCadastro status){
+        List<InstituicaoEnsinoSuperior> lista = (status == null)
+                //cria a lista com todas as instituições caso não seja escolhido
+                //nenhum status
+                ? iesRepositorio.findAll()
+
+                : iesRepositorio.findByStatus(status);
+        return lista.stream().map(InstituicaoEnsinoSuperiorResponseDTO::fromEntity)
+                .toList();
+    }
+
+
 
     /**
      * Realiza a inativação lógica da instituição (soft delete), preservando o histórico.
