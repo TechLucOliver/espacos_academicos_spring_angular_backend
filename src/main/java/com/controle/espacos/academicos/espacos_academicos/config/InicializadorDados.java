@@ -1,13 +1,11 @@
 package com.controle.espacos.academicos.espacos_academicos.config;
 
 import com.controle.espacos.academicos.espacos_academicos.enums.StatusCadastro;
+import com.controle.espacos.academicos.espacos_academicos.enums.StatusEspaco;
+import com.controle.espacos.academicos.espacos_academicos.enums.TipoEspaco;
 import com.controle.espacos.academicos.espacos_academicos.enums.Turno;
-import com.controle.espacos.academicos.espacos_academicos.model.CentroAcademico;
-import com.controle.espacos.academicos.espacos_academicos.model.Curso;
-import com.controle.espacos.academicos.espacos_academicos.model.InstituicaoEnsinoSuperior;
-import com.controle.espacos.academicos.espacos_academicos.repository.CentroAcademicoRepository;
-import com.controle.espacos.academicos.espacos_academicos.repository.CursoRepository;
-import com.controle.espacos.academicos.espacos_academicos.repository.InstituicaoEnsinoSuperiorRepository;
+import com.controle.espacos.academicos.espacos_academicos.model.*;
+import com.controle.espacos.academicos.espacos_academicos.repository.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,7 +26,7 @@ public class InicializadorDados {
      */
     @Bean
     CommandLineRunner iniciarDB(InstituicaoEnsinoSuperiorRepository iesRepositorio, CentroAcademicoRepository centroAcademicoRepository,
-                                CursoRepository cursoRepository){
+                                CursoRepository cursoRepository, EspacoAcademicoRepository espacoRepository, LaboratorioRepository laboratorioRepository){
         return args -> {
           if (iesRepositorio.count() == 0){
               InstituicaoEnsinoSuperior ucsal = InstituicaoEnsinoSuperior.builder()
@@ -66,6 +64,35 @@ public class InicializadorDados {
 
               cursoRepository.save(bes);
               System.out.println("Curso " + bes.getSigla() + " cadastrado e vinculado ao " + ccetSalvo.getNome());
+
+              EspacoAcademico sala222 = EspacoAcademico.builder()
+                      .sigla("SALA-222")
+                      .nome("Sala 222 - Bloco B")
+                      .tipo(TipoEspaco.SALA)
+                      .descricaoComplementar("Equipada com projetor multimídia")
+                      .capacidadeMaxima(45)
+                      .localizacao("Pavilhão de Aulas, 4º Andar")
+                      .status(StatusEspaco.DISPONIVEL)
+                      .centroAcademico(ccetSalvo)
+                      .build();
+
+              espacoRepository.save(sala222);
+              System.out.println("Espaço academico cadastrado no centro "+ccet.getNome());
+
+              Laboratorio lab01 = Laboratorio.builder()
+                      .sigla("LAB-01")
+                      .nome("Laboratório de Informática 01")
+                      .tipo(TipoEspaco.LABORATORIO)
+                      .descricaoComplementar("Equipado com projetor e ar condicionado")
+                      .capacidadeMaxima(40)
+                      .localizacao("Pavilhão Tecnológico, Térreo")
+                      .status(StatusEspaco.DISPONIVEL)
+                      .tipoComputadores("Core i7, 16GB RAM, SSD 512GB")
+                      .centroAcademico(ccetSalvo)
+                      .build();
+
+              laboratorioRepository.save(lab01);
+              System.out.println("Laboratorio cadastrado com sucesso no centro "+lab01.getCentroAcademico());
           }
         };
     }
