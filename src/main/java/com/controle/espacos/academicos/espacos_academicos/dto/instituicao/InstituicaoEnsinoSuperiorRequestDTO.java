@@ -30,11 +30,14 @@ public record InstituicaoEnsinoSuperiorRequestDTO(
 
         @NotBlank(message = "Informar o email é obrigatório")
         @Email(message = "Formato de email inválido")
+        @Size(max = 100, message = "O e-mail deve ter no máximo 100 caracteres.")
         String emailCentral,
 
         @NotBlank(message = "Informar o telefone central é obrigatório")
+        @Size(max = 20, message = "O telefone deve ter no máximo 20 caracteres.")
         String telefoneCentral,
 
         @NotBlank(message = "Informar o nome do reitor é obrigatório")
+        @Size(max = 100, message = "O nome do Reitor deve ter no máximo 100 caracteres.")
         String nomeReitor
 ) { }
