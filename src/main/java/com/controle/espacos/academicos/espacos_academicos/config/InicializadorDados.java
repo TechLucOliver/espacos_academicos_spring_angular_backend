@@ -1,9 +1,12 @@
 package com.controle.espacos.academicos.espacos_academicos.config;
 
 import com.controle.espacos.academicos.espacos_academicos.enums.StatusCadastro;
+import com.controle.espacos.academicos.espacos_academicos.enums.Turno;
 import com.controle.espacos.academicos.espacos_academicos.model.CentroAcademico;
+import com.controle.espacos.academicos.espacos_academicos.model.Curso;
 import com.controle.espacos.academicos.espacos_academicos.model.InstituicaoEnsinoSuperior;
 import com.controle.espacos.academicos.espacos_academicos.repository.CentroAcademicoRepository;
+import com.controle.espacos.academicos.espacos_academicos.repository.CursoRepository;
 import com.controle.espacos.academicos.espacos_academicos.repository.InstituicaoEnsinoSuperiorRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
@@ -24,7 +27,8 @@ public class InicializadorDados {
      * @return Instância de {@link CommandLineRunner} executada no bootstrap do Spring.
      */
     @Bean
-    CommandLineRunner iniciarDB(InstituicaoEnsinoSuperiorRepository iesRepositorio, CentroAcademicoRepository centroAcademicoRepository){
+    CommandLineRunner iniciarDB(InstituicaoEnsinoSuperiorRepository iesRepositorio, CentroAcademicoRepository centroAcademicoRepository,
+                                CursoRepository cursoRepository){
         return args -> {
           if (iesRepositorio.count() == 0){
               InstituicaoEnsinoSuperior ucsal = InstituicaoEnsinoSuperior.builder()
@@ -48,8 +52,20 @@ public class InicializadorDados {
                       .status(StatusCadastro.ATIVO)
                       .build();
 
-              centroAcademicoRepository.save(ccet);
+              CentroAcademico ccetSalvo = centroAcademicoRepository.save(ccet);
               System.out.println("IES e Centro Academico devidamente cadastrados e lincados");
+
+              Curso bes = Curso.builder()
+                      .sigla("BES")
+                      .descricao("Bacharelado em Engenharia de Software")
+                      .turno(Turno.MATUTINO)
+                      .nomeCoordenador("Prof. Oswaldo")
+                      .centroAcademico(ccetSalvo)
+                      .status(StatusCadastro.ATIVO)
+                      .build();
+
+              cursoRepository.save(bes);
+              System.out.println("Curso " + bes.getSigla() + " cadastrado e vinculado ao " + ccetSalvo.getNome());
           }
         };
     }
