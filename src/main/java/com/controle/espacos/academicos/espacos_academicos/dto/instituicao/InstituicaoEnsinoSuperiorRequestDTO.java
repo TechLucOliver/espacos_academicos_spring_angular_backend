@@ -20,7 +20,7 @@ import java.util.List;
  * @param emailCentral    Correio eletrónico institucional de contacto central.
  * @param telefoneCentral Número telefónico para comunicação central.
  * @param nomeReitor      Nome completo do reitor responsável pela IES.
- *
+ * @param proReitorias    Lista com as pró-reitorias e respectivas nomeações vinculadas à IES.
  */
 public record InstituicaoEnsinoSuperiorRequestDTO(
 

@@ -21,6 +21,7 @@ import java.util.List;
  * @param nomeReitor        Nome do reitor vinculado.
  * @param dataCadastramento Data em que o cadastro foi efetuado.
  * @param status            Situação cadastral (ATIVO ou INATIVO).
+ * @param proReitorias      Coleção de pró-reitorias pertencentes à IES.
  */
 public record InstituicaoEnsinoSuperiorResponseDTO(
     Long id,
@@ -46,7 +47,15 @@ public record InstituicaoEnsinoSuperiorResponseDTO(
                 : List.of();
 
         return  new InstituicaoEnsinoSuperiorResponseDTO(
-          ies.getId(), ies.getSigla(), ies.getNome(), ies.getEmailCentral(), ies.getTelefoneCentral(), ies.getNomeReitor(), ies.getDataCadastramento(), ies.getStatus(), listaReitorias
+                ies.getId(),
+                ies.getSigla(),
+                ies.getNome(),
+                ies.getEmailCentral(),
+                ies.getTelefoneCentral(),
+                ies.getNomeReitor(),
+                ies.getDataCadastramento(),
+                ies.getStatus(),
+                listaReitorias
         );
     }
 }

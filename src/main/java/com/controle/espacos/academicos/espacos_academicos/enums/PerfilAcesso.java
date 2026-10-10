@@ -7,6 +7,8 @@ package com.controle.espacos.academicos.espacos_academicos.enums;
  * </p>
  *
  */
+
+
 public enum PerfilAcesso {
     /**
      * Responsável pelo gerenciamento de entidades globais (IES, CAs, Cursos, Docentes e Logs).

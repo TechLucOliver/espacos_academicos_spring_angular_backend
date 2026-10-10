@@ -15,6 +15,8 @@ import jakarta.validation.constraints.Size;
  * @param iesId           Identificador da IES à qual o Centro Acadêmico pertence (RF-007).
  *
  */
+
+
 public record CentroAcademicoRequestDTO(
         @NotBlank(message = "Informar o nome do Centro Academico é obrigatório")
         @Size(max = 150, message = "O nome não pode ter mais de 150 caracteres")
