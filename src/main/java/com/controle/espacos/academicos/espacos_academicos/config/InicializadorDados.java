@@ -7,7 +7,9 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Componente de configuração encarregado de semear a base de dados em memória (H2)
@@ -26,7 +28,7 @@ public class InicializadorDados {
     @Bean
     CommandLineRunner iniciarDB(InstituicaoEnsinoSuperiorRepository iesRepositorio, CentroAcademicoRepository centroAcademicoRepository,
                                 CursoRepository cursoRepository, EspacoAcademicoRepository espacoRepository, LaboratorioRepository laboratorioRepository,
-                                SoftwareRepository softwareRepository){
+                                SoftwareRepository softwareRepository, UsuarioReposity usuarioRepository){
         return args -> {
           if (iesRepositorio.count() == 0){
               InstituicaoEnsinoSuperior ucsal = InstituicaoEnsinoSuperior.builder()
@@ -129,6 +131,32 @@ public class InicializadorDados {
                       .build());
 
                 InstituicaoEnsinoSuperior ucsalAtualizada = iesRepositorio.save(ucsal);
+
+              Usuario admin = Usuario.builder()
+                      .matricula("ADM-001")
+                      .nomeCompleto("Administrador Geral")
+                      .email("admin@ucsal.br")
+                      .telefone("71988887777")
+                      .senha("admin123")
+                      .dataCadastramento(LocalDate.now())
+                      .status(StatusCadastro.ATIVO)
+                      .centroAcademico(ccetSalvo)
+                      .perfis(Set.of(PerfilAcesso.ADMINISTRADOR))
+                      .build();
+
+              Usuario professor = Usuario.builder()
+                      .matricula("DOC-20261")
+                      .nomeCompleto("Prof. Carlos Eduardo")
+                      .email("carlos.docente@ucsal.br")
+                      .telefone("71977776666")
+                      .senha("docente123")
+                      .dataCadastramento(LocalDate.now())
+                      .status(StatusCadastro.ATIVO)
+                      .centroAcademico(ccetSalvo)
+                      .perfis(Set.of(PerfilAcesso.COLABORADOR, PerfilAcesso.USUARIO))
+                      .build();
+
+              usuarioRepository.saveAll(List.of(admin, professor));
           }
         };
     }
