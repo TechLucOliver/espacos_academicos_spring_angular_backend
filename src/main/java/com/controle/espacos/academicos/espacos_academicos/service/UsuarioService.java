@@ -7,7 +7,7 @@ import com.controle.espacos.academicos.espacos_academicos.enums.StatusCadastro;
 import com.controle.espacos.academicos.espacos_academicos.model.CentroAcademico;
 import com.controle.espacos.academicos.espacos_academicos.model.Usuario;
 import com.controle.espacos.academicos.espacos_academicos.repository.CentroAcademicoRepository;
-import com.controle.espacos.academicos.espacos_academicos.repository.UsuarioReposity;
+import com.controle.espacos.academicos.espacos_academicos.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,7 +19,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class UsuarioService {
-    private final UsuarioReposity usuarioRepository;
+    private final UsuarioRepository usuarioRepository;
     private final CentroAcademicoRepository centroRepository;
 
     @Transactional(readOnly = true)

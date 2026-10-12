@@ -28,7 +28,7 @@ public class InicializadorDados {
     @Bean
     CommandLineRunner iniciarDB(InstituicaoEnsinoSuperiorRepository iesRepositorio, CentroAcademicoRepository centroAcademicoRepository,
                                 CursoRepository cursoRepository, EspacoAcademicoRepository espacoRepository, LaboratorioRepository laboratorioRepository,
-                                SoftwareRepository softwareRepository, UsuarioReposity usuarioRepository){
+                                SoftwareRepository softwareRepository, UsuarioRepository usuarioRepository){
         return args -> {
           if (iesRepositorio.count() == 0){
               InstituicaoEnsinoSuperior ucsal = InstituicaoEnsinoSuperior.builder()

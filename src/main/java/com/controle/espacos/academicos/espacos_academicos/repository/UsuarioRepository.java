@@ -10,7 +10,7 @@ import com.controle.espacos.academicos.espacos_academicos.model.Usuario;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UsuarioReposity extends JpaRepository<Usuario, Long> {
+public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     Optional<Usuario> findByEmail(String email);
 
     Optional<Usuario> findByMatricula(String matricula);
