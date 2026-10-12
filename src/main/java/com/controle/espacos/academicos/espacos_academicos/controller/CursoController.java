@@ -97,7 +97,7 @@ public class CursoController {
      * @return Resposta sem corpo e código HTTP 204 (No Content).
      */
     @PatchMapping("/{id}/inativar")
-    public ResponseEntity<CursoResponseDTO> inativar(@PathVariable Long id){
+    public ResponseEntity<Void> inativar(@PathVariable Long id){
         cursoService.inativar(id);
         return ResponseEntity.noContent().build();
     }
