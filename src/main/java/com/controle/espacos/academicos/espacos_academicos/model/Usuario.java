@@ -118,7 +118,7 @@ public class Usuario {
             throw new IllegalStateException("O usuário já está com o cadastro ativo.");
         }
         this.status = StatusCadastro.ATIVO;
-        this.motivoInativacao = null;
+        this.motivoInativacao = null;//quando o docente é reativado ele apaga o motivo atual
     }
 
     /**

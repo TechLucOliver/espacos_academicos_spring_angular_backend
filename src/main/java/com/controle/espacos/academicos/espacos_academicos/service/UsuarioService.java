@@ -6,7 +6,9 @@ import com.controle.espacos.academicos.espacos_academicos.dto.usuario.UsuarioRes
 import com.controle.espacos.academicos.espacos_academicos.enums.StatusCadastro;
 import com.controle.espacos.academicos.espacos_academicos.model.CentroAcademico;
 import com.controle.espacos.academicos.espacos_academicos.model.Usuario;
+import com.controle.espacos.academicos.espacos_academicos.model.log.LogAuditoria;
 import com.controle.espacos.academicos.espacos_academicos.repository.CentroAcademicoRepository;
+import com.controle.espacos.academicos.espacos_academicos.repository.LogAuditoriaRepository;
 import com.controle.espacos.academicos.espacos_academicos.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,7 @@ import java.util.List;
 public class UsuarioService {
     private final UsuarioRepository usuarioRepository;
     private final CentroAcademicoRepository centroRepository;
+    private final LogAuditoriaRepository logAuditoriaRepository;
 
     @Transactional(readOnly = true)
     public List<UsuarioResponseDTO> listarTodos(){
@@ -110,6 +113,14 @@ public class UsuarioService {
 
         usuario.inativar(requestDTO.motivo());
         usuarioRepository.save(usuario);
+
+        //Para manter os registros de log de inativação dos docentes
+        LogAuditoria log = LogAuditoria.builder()
+                .acao("INATIVACAO_DOCENTE")
+                .entidade("Usuario")
+                .detalhes("Usuário "+ usuario.getMatricula()+ "inativado. Motivo: "+ requestDTO.motivo())
+                .build();
+        logAuditoriaRepository.save(log);
     }
 
     @Transactional
@@ -119,5 +130,14 @@ public class UsuarioService {
 
         usuario.reativar();
         usuarioRepository.save(usuario);
+        // por analogia à desativação fiz a mesma coisa na rativação
+        LogAuditoria log = LogAuditoria.builder()
+                .acao("REATIVAR_USUARIO")
+                .entidade("Usuario")
+                .detalhes("Usuário " + usuario.getMatricula() + " (" + usuario.getNomeCompleto() + ") teve seu cadastro reativado.")
+                .usuario(usuario)
+                .build();
+        logAuditoriaRepository.save(log);
+
     }
 }
