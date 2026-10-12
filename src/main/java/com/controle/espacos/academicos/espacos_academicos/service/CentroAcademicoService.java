@@ -7,26 +7,17 @@ import com.controle.espacos.academicos.espacos_academicos.model.CentroAcademico;
 import com.controle.espacos.academicos.espacos_academicos.model.InstituicaoEnsinoSuperior;
 import com.controle.espacos.academicos.espacos_academicos.repository.CentroAcademicoRepository;
 import com.controle.espacos.academicos.espacos_academicos.repository.InstituicaoEnsinoSuperiorRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class CentroAcademicoService {
     private final CentroAcademicoRepository centroAcademicoRepository;
     private final InstituicaoEnsinoSuperiorRepository iesRepository;
-
-    /**
-     * Construtor para injeção de dependências dos repositórios gerenciados pelo Spring.
-     *
-     * @param centroAcademicoRepository  Repositório de persistência de Centros Acadêmicos.
-     * @param iesRepository Repositório de persistência de IES para validação referencial.
-     */
-    public CentroAcademicoService(CentroAcademicoRepository centroAcademicoRepository, InstituicaoEnsinoSuperiorRepository iesRepository){
-        this.centroAcademicoRepository = centroAcademicoRepository;
-        this.iesRepository = iesRepository;
-    }
 
     /**
      * Registra um novo Centro Acadêmico aplicando regras de integridade e unicidade.
