@@ -130,6 +130,6 @@ public class SolicitacaoReserva {
             throw new IllegalStateException("Apenas reservas aprovadas podem ser finalizadas");
         }
         this.status = StatusSolicitacao.FINALIZADA;
-        this.espaco.marcarIndisponivel();
+        this.espaco.marcarDisponivel();
     }
 }

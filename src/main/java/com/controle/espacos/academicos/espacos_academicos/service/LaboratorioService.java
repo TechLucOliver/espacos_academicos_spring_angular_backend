@@ -1,5 +1,6 @@
 package com.controle.espacos.academicos.espacos_academicos.service;
 
+import com.controle.espacos.academicos.espacos_academicos.config.logs.Auditavel;
 import com.controle.espacos.academicos.espacos_academicos.dto.laboratorio.LaboratorioRequestDTO;
 import com.controle.espacos.academicos.espacos_academicos.dto.laboratorio.LaboratorioResponseDTO;
 import com.controle.espacos.academicos.espacos_academicos.dto.software.SoftwareResponseDTO;
@@ -56,6 +57,7 @@ public class LaboratorioService {
     }
 
     @Transactional
+    @Auditavel(acao = "CADASTRAR")
     public LaboratorioResponseDTO cadastrar(LaboratorioRequestDTO dto) {
         CentroAcademico ca = caRepository.findById(dto.centroAcademicoId())
                 .orElseThrow(() -> new RuntimeException("Centro Acadêmico não encontrado com o ID: " + dto.centroAcademicoId()));
@@ -85,6 +87,7 @@ public class LaboratorioService {
     }
 
     @Transactional
+    @Auditavel(acao = "EDITAR")
     public LaboratorioResponseDTO editar(Long id, LaboratorioRequestDTO dto) {
         Laboratorio lab = labRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Laboratório não encontrado com o ID: " + id));
@@ -118,6 +121,7 @@ public class LaboratorioService {
      * @param id Identificador do laboratório.
      */
     @Transactional
+    @Auditavel(acao = "COLOCAR EM MANUTENCAO")
     public void colocarEmManutencao(Long id) {
         Laboratorio lab = labRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Laboratório não encontrado com o ID: " + id));
@@ -140,6 +144,7 @@ public class LaboratorioService {
      * @param id Identificador do laboratório.
      */
     @Transactional
+    @Auditavel(acao = "LIBERAR MANUTENCAO")
     public void liberarManutencao(Long id) {
         Laboratorio lab = labRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Laboratório não encontrado com o ID: " + id));
@@ -176,6 +181,7 @@ public class LaboratorioService {
      * @param softwareId    Identificador do software a ser instalado.
      */
     @Transactional
+    @Auditavel(acao = "INSTALAR")
     public void instalarSoftware(Long laboratorioId, Long softwareId) {
         Laboratorio lab = labRepository.findById(laboratorioId)
                 .orElseThrow(() -> new RuntimeException("Laboratório não encontrado com o ID: " + laboratorioId));
@@ -194,6 +200,7 @@ public class LaboratorioService {
      * @param softwareId    Identificador do software a ser desinstalado.
      */
     @Transactional
+    @Auditavel(acao = "DESINSTALAR")
     public void desinstalarSoftware(Long laboratorioId, Long softwareId) {
         Laboratorio lab = labRepository.findById(laboratorioId)
                 .orElseThrow(() -> new RuntimeException("Laboratório não encontrado com o ID: " + laboratorioId));

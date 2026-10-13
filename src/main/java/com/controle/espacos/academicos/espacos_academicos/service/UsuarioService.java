@@ -1,5 +1,6 @@
 package com.controle.espacos.academicos.espacos_academicos.service;
 
+import com.controle.espacos.academicos.espacos_academicos.config.logs.Auditavel;
 import com.controle.espacos.academicos.espacos_academicos.dto.usuario.InativarUsuarioRequestDTO;
 import com.controle.espacos.academicos.espacos_academicos.dto.usuario.UsuarioRequestDTO;
 import com.controle.espacos.academicos.espacos_academicos.dto.usuario.UsuarioResponseDTO;
@@ -50,6 +51,7 @@ public class UsuarioService {
     }
 
     @Transactional
+    @Auditavel(acao = "CADASTRAR")
     public UsuarioResponseDTO cadastrar(UsuarioRequestDTO requestDTO){
         if (usuarioRepository.existsByEmailIgnoreCase(requestDTO.email())){
             throw new IllegalArgumentException("Já existe um usuário cadastrado com este e-mail.");
@@ -80,6 +82,7 @@ public class UsuarioService {
     }
 
     @Transactional
+    @Auditavel(acao = "EDITAR")
     public UsuarioResponseDTO editar(Long id, UsuarioRequestDTO requestDTO){
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado com o ID: " + id));
@@ -107,37 +110,22 @@ public class UsuarioService {
     }
 
     @Transactional
+    @Auditavel(acao = "INATIVAR")
     public void inativar(Long id, InativarUsuarioRequestDTO requestDTO){
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado com o ID: " + id));
 
         usuario.inativar(requestDTO.motivo());
         usuarioRepository.save(usuario);
-
-        //Para manter os registros de log de inativação dos docentes
-        LogAuditoria log = LogAuditoria.builder()
-                .acao("INATIVACAO_DOCENTE")
-                .entidade("Usuario")
-                .detalhes("Usuário "+ usuario.getMatricula()+ "inativado. Motivo: "+ requestDTO.motivo())
-                .build();
-        logAuditoriaRepository.save(log);
     }
 
     @Transactional
+    @Auditavel(acao = "REATIVAR")
     public void reativar(Long id){
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado com o ID: " + id));
 
         usuario.reativar();
         usuarioRepository.save(usuario);
-        // por analogia à desativação fiz a mesma coisa na rativação
-        LogAuditoria log = LogAuditoria.builder()
-                .acao("REATIVAR_USUARIO")
-                .entidade("Usuario")
-                .detalhes("Usuário " + usuario.getMatricula() + " (" + usuario.getNomeCompleto() + ") teve seu cadastro reativado.")
-                .usuario(usuario)
-                .build();
-        logAuditoriaRepository.save(log);
-
     }
 }

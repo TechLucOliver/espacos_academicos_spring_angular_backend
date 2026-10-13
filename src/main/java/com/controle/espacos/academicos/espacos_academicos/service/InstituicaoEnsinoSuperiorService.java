@@ -1,5 +1,6 @@
 package com.controle.espacos.academicos.espacos_academicos.service;
 
+import com.controle.espacos.academicos.espacos_academicos.config.logs.Auditavel;
 import com.controle.espacos.academicos.espacos_academicos.dto.instituicao.InstituicaoEnsinoSuperiorRequestDTO;
 import com.controle.espacos.academicos.espacos_academicos.dto.instituicao.InstituicaoEnsinoSuperiorResponseDTO;
 import com.controle.espacos.academicos.espacos_academicos.enums.StatusCadastro;
@@ -39,6 +40,7 @@ public class InstituicaoEnsinoSuperiorService {
      * @throws IllegalArgumentException Caso a sigla informada já esteja registada.
      */
     @Transactional
+    @Auditavel(acao = "CADASTRAR")
     public InstituicaoEnsinoSuperiorResponseDTO cadastrar(InstituicaoEnsinoSuperiorRequestDTO requestDTO){
         if (iesRepositorio.existsBySiglaIgnoreCase(requestDTO.sigla())){
             throw new IllegalArgumentException("Já existe uma IES cadastrada com a sigla informada.");
@@ -82,6 +84,7 @@ public class InstituicaoEnsinoSuperiorService {
      * 
      */
     @Transactional
+    @Auditavel(acao = "EDITAR")
     public InstituicaoEnsinoSuperiorResponseDTO editar(Long id, InstituicaoEnsinoSuperiorRequestDTO requestDTO){
         InstituicaoEnsinoSuperior instituicao = iesRepositorio.findById(id)
                 .orElseThrow(() -> new RuntimeException("Instituição não encontrada com o id: "+id));
@@ -167,6 +170,7 @@ public class InstituicaoEnsinoSuperiorService {
      * @throws RuntimeException Caso a instituição não seja encontrada.
      */
     @Transactional
+    @Auditavel(acao = "INATIVAR")
     public void inativar(Long id){
         InstituicaoEnsinoSuperior ies = iesRepositorio.findById(id)
                 .orElseThrow(() -> new RuntimeException("IES não encontrada com o id: "+id));
@@ -182,6 +186,7 @@ public class InstituicaoEnsinoSuperiorService {
      * @throws RuntimeException se a IES não for encontrada.
      */
     @Transactional
+    @Auditavel(acao = "REATIVAR")
     public void reativar(Long id) {
         InstituicaoEnsinoSuperior ies = iesRepositorio.findById(id)
                 .orElseThrow(() -> new RuntimeException("IES não encontrada com o ID: " + id));

@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
  * @param dataHora    Data e hora em que a ação ocorreu.
  * @param acao        Operação executada (ex.: INATIVACAO_USUARIO).
  * @param entidade    Nome da entidade afetada (ex.: Usuario).
- * @param detalhes    Descrição detalhada ou resumo do evento.
  * @param usuarioId   ID do usuário que executou ou sofreu a ação.
  * @param usuarioNome Nome do usuário para exibição direta em tela.
  */
@@ -21,9 +20,9 @@ public record LogAuditoriaResponseDTO(
         LocalDateTime dataHora,
         String acao,
         String entidade,
-        String detalhes,
         Long usuarioId,
-        String usuarioNome
+        String usuarioNome,
+        String matricula
 ) {
     public static LogAuditoriaResponseDTO fromEntity(LogAuditoria log){
         return new LogAuditoriaResponseDTO(
@@ -31,9 +30,9 @@ public record LogAuditoriaResponseDTO(
                 log.getDataHora(),
                 log.getAcao(),
                 log.getEntidade(),
-                log.getDetalhes(),
                 log.getUsuario() !=null ? log.getUsuario().getId(): null,
-                log.getUsuario() != null ? log.getUsuario().getNomeCompleto() : null
+                log.getUsuario() != null ? log.getUsuario().getNomeCompleto() : null,
+                log.getUsuario() != null ? log.getUsuario().getMatricula() : null
         );
 
     }

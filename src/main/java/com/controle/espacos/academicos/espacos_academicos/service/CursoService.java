@@ -1,5 +1,6 @@
 package com.controle.espacos.academicos.espacos_academicos.service;
 
+import com.controle.espacos.academicos.espacos_academicos.config.logs.Auditavel;
 import com.controle.espacos.academicos.espacos_academicos.dto.curso.CursoRequestDTO;
 import com.controle.espacos.academicos.espacos_academicos.dto.curso.CursoResponseDTO;
 import com.controle.espacos.academicos.espacos_academicos.enums.StatusCadastro;
@@ -79,6 +80,7 @@ public class CursoService {
      * @throws IllegalArgumentException se a sigla já estiver cadastrada para o mesmo centro.
      */
     @Transactional
+    @Auditavel(acao = "CADASTRAR")
     public CursoResponseDTO cadastrar(CursoRequestDTO requestDTO){
         CentroAcademico centroAcademico = centroAcademicoRepository.findById(requestDTO.centroAcademicoId())
                 .orElseThrow(() -> new RuntimeException("Centro Acadêmico não encontrado com o id: "+requestDTO.centroAcademicoId()));
@@ -114,6 +116,7 @@ public class CursoService {
      * @throws IllegalArgumentException se a nova sigla colidir com outro curso da mesma unidade.
      */
     @Transactional
+    @Auditavel(acao = "EDITAR")
     public CursoResponseDTO editar(Long id, CursoRequestDTO requestDTO){
         Curso curso = cursoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Curso não encontrado com o id: "+id));
@@ -146,6 +149,7 @@ public class CursoService {
      * @throws RuntimeException se o curso não for localizado.
      */
     @Transactional
+    @Auditavel(acao = "INATIVAR")
     public void inativar(Long id){
         Curso curso = cursoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Curso não encontrado com o id: "+id));
@@ -165,6 +169,7 @@ public class CursoService {
      * @throws IllegalStateException se o Centro Acadêmico vinculado estiver inativo.
      */
     @Transactional
+    @Auditavel(acao = "REATIVAR")
     public void reativar(Long id){
         Curso curso = cursoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Curso não encontrado com o id: "+id));
