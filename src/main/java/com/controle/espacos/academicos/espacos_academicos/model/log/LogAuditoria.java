@@ -38,12 +38,6 @@ public class LogAuditoria {
     @Column(nullable = false, length = 100)
     private String entidade;
 
-    /**
-     * Descrição detalhada do evento ou snapshot dos dados (armazena payloads extensos via TEXT).
-     */
-    @Column(columnDefinition = "TEXT")
-    private String detalhes;
-
     /** Usuário responsável pela execução da ação. */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "usuario_id")

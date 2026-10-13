@@ -1,5 +1,6 @@
 package com.controle.espacos.academicos.espacos_academicos.service;
 
+import com.controle.espacos.academicos.espacos_academicos.config.logs.Auditavel;
 import com.controle.espacos.academicos.espacos_academicos.dto.centro_academico.CentroAcademicoRequestDTO;
 import com.controle.espacos.academicos.espacos_academicos.dto.centro_academico.CentroAcademicoResponseDTO;
 import com.controle.espacos.academicos.espacos_academicos.enums.StatusCadastro;
@@ -28,6 +29,7 @@ public class CentroAcademicoService {
      * @throws IllegalArgumentException se já houver um CA com o mesmo nome na referida IES.
      */
     @Transactional
+    @Auditavel(acao = "CADASTRAR")
     public CentroAcademicoResponseDTO cadastrar(CentroAcademicoRequestDTO requestDTO){
         InstituicaoEnsinoSuperior ies = iesRepository.findById(requestDTO.iesId())
                 .orElseThrow(() -> new RuntimeException("Ies não encontrada com o ID: "+requestDTO.iesId()));
@@ -56,6 +58,7 @@ public class CentroAcademicoService {
      * @return DTO de resposta do CA atualizado.
      */
     @Transactional
+    @Auditavel(acao = "EDITAR")
     public CentroAcademicoResponseDTO editar(Long id, CentroAcademicoRequestDTO requestDTO){
         CentroAcademico centroAcademico = centroAcademicoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Centro Academico não encontrado com id: "+id));
@@ -126,6 +129,7 @@ public class CentroAcademicoService {
      * @throws RuntimeException se o Centro Acadêmico não for localizado.
      */
     @Transactional
+    @Auditavel(acao = "INATIVAR")
     public void inativar(Long id){
         CentroAcademico centroAcademico = centroAcademicoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Centro Academico não encontrado com o ID: "+id));
@@ -145,6 +149,7 @@ public class CentroAcademicoService {
      * @throws IllegalStateException se a IES mantenedora estiver inativa.
      */
     @Transactional
+    @Auditavel(acao = "REATIVAR")
     public void reativar(Long id) {
         CentroAcademico centroAcademico = centroAcademicoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Centro Acadêmico não encontrado com o ID: " + id));

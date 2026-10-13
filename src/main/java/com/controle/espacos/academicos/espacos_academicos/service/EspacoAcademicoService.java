@@ -1,5 +1,6 @@
 package com.controle.espacos.academicos.espacos_academicos.service;
 
+import com.controle.espacos.academicos.espacos_academicos.config.logs.Auditavel;
 import com.controle.espacos.academicos.espacos_academicos.dto.espaco_academico.EspacoAcademicoRequestDTO;
 import com.controle.espacos.academicos.espacos_academicos.dto.espaco_academico.EspacoAcademicoResponseDTO;
 import com.controle.espacos.academicos.espacos_academicos.enums.StatusCadastro;
@@ -46,6 +47,7 @@ public class EspacoAcademicoService {
     }
 
     @Transactional
+    @Auditavel(acao = "CADASTRAR")
     public EspacoAcademicoResponseDTO cadastrar(EspacoAcademicoRequestDTO requestDTO){
         CentroAcademico centroAcademico = centroRepository.findById(requestDTO.centroAcademicoId())
                 .orElseThrow(() -> new RuntimeException("Centro Acadêmico não encontrado com o id: "+requestDTO.centroAcademicoId()));
@@ -78,6 +80,7 @@ public class EspacoAcademicoService {
     }
 
     @Transactional
+    @Auditavel(acao = "EDITAR")
     public EspacoAcademicoResponseDTO editar(Long id, EspacoAcademicoRequestDTO requestDTO){
         EspacoAcademico espacoAcademico = espacoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Espaço acadêmico não encontrado com o ID: " + id));
@@ -111,6 +114,7 @@ public class EspacoAcademicoService {
      * @param id Identificador do espaço.
      */
     @Transactional
+    @Auditavel(acao = "REATIVAR")
     public void colocarEmManutencao(Long id){
         EspacoAcademico espacoAcademico = espacoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Espaço acadêmico não encontrado com o ID: " + id));
@@ -133,6 +137,7 @@ public class EspacoAcademicoService {
      * @param id Identificador do espaço.
      */
     @Transactional
+    @Auditavel(acao = "LIBERAR MANUTENCAO")
     public void liberarManutencao(Long id){
         EspacoAcademico espacoAcademico = espacoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Espaço acadêmico não encontrado com o ID: " + id));

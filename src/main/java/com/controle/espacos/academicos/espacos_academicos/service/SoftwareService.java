@@ -1,5 +1,6 @@
 package com.controle.espacos.academicos.espacos_academicos.service;
 
+import com.controle.espacos.academicos.espacos_academicos.config.logs.Auditavel;
 import com.controle.espacos.academicos.espacos_academicos.dto.software.SoftwareRequestDTO;
 import com.controle.espacos.academicos.espacos_academicos.dto.software.SoftwareResponseDTO;
 import com.controle.espacos.academicos.espacos_academicos.enums.TipoSoftware;
@@ -31,6 +32,7 @@ public class SoftwareService {
      * @throws IllegalArgumentException se já houver um software com o mesmo nome.
      */
     @Transactional
+    @Auditavel(acao = "CADASTRAR")
     public SoftwareResponseDTO cadastrar(SoftwareRequestDTO dto) {
         if (softwareRepository.existsByNomeIgnoreCase(dto.nome())) {
             throw new IllegalArgumentException("Já existe um software cadastrado com o nome informado.");
@@ -99,6 +101,7 @@ public class SoftwareService {
      * @throws IllegalArgumentException se o novo nome colidir com outro software.
      */
     @Transactional
+    @Auditavel(acao = "EDITAR")
     public SoftwareResponseDTO editar(Long id, SoftwareRequestDTO dto) {
         Software software = softwareRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Software não encontrado com o ID: " + id));

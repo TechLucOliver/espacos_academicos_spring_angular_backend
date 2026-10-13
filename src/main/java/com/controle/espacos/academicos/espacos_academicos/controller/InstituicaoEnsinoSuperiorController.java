@@ -24,7 +24,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/ies")
 @AllArgsConstructor 
-public class InstituicaoEnsinoSuperiorController {
+public class    InstituicaoEnsinoSuperiorController {
 
     private final InstituicaoEnsinoSuperiorService iesService;
     
