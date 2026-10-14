@@ -3,11 +3,9 @@ package com.controle.espacos.academicos.espacos_academicos.model;
 import com.controle.espacos.academicos.espacos_academicos.enums.TipoSoftware;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.stereotype.Component;
 
 /**
  * Entidade que cataloga programas e aplicações disponíveis ou solicitados para laboratórios.
- *
  * <b>Requisitos atendidos:</b>
  * <ul>
  *   <li>Detalhamento técnico de softwares em laboratórios.</li>

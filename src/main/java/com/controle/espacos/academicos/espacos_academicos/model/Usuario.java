@@ -11,7 +11,6 @@ import java.util.Set;
 
 /**
  * Entidade de domínio central para autenticação e gestão de usuários/docentes.
- *
  * <b>Requisitos atendidos:</b>
  * <ul>
  *   <li>Cadastro docente com dados funcionais e de contato.</li>
