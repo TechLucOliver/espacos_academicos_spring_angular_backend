@@ -64,7 +64,7 @@ public class SolicitacaoSoftware {
 
     /** Colaborador responsável pela avaliação técnica. */
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "avaliador_id", nullable = false)
+    @JoinColumn(name = "avaliador_id")
     private Usuario avaliador;
 
     @PrePersist

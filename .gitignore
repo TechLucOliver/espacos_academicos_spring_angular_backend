@@ -31,3 +31,7 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Ficheiros de Log locais
+LOGS_DO_SISTEMA.txt
+*.log
