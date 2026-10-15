@@ -4,6 +4,7 @@ import com.controle.espacos.academicos.espacos_academicos.config.logs.Auditavel;
 import com.controle.espacos.academicos.espacos_academicos.dto.solicitacao_reserva.ReprovarSolicitacaoDTO;
 import com.controle.espacos.academicos.espacos_academicos.dto.solicitacao_reserva.SolicitacaoReservaRequestDTO;
 import com.controle.espacos.academicos.espacos_academicos.dto.solicitacao_reserva.SolicitacaoReservaResponseDTO;
+import com.controle.espacos.academicos.espacos_academicos.enums.PerfilAcesso;
 import com.controle.espacos.academicos.espacos_academicos.enums.StatusSolicitacao;
 import com.controle.espacos.academicos.espacos_academicos.model.EspacoAcademico;
 import com.controle.espacos.academicos.espacos_academicos.model.Usuario;
@@ -15,6 +16,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -63,6 +66,10 @@ public class SolicitacaoReservaService {
             throw new IllegalArgumentException("O horário de término deve ser posterior ao horário de início.");
         }
 
+        if (dto.dataUtilizacao().isBefore(LocalDate.now())){
+            throw new IllegalArgumentException("A data de reserva não pode ser retroativa");
+        }
+
         EspacoAcademico espaco = espacoRepository.findById(dto.espacoId())
                 .orElseThrow(() -> new RuntimeException("Espaço acadêmico não encontrado com ID: " + dto.espacoId()));
 
@@ -81,9 +88,11 @@ public class SolicitacaoReservaService {
         }
 
         SolicitacaoReserva reserva = SolicitacaoReserva.builder()
+                .dataSolicitacao(LocalDateTime.now())
                 .dataUtilizacao(dto.dataUtilizacao())
                 .horaInicio(dto.horaInicio())
                 .horaFim(dto.horaFim())
+                .status(StatusSolicitacao.PENDENTE)
                 .espaco(espaco)
                 .solicitante(solicitante)
                 .build();
@@ -100,6 +109,27 @@ public class SolicitacaoReservaService {
 
         Usuario avaliador = usuarioRepository.findById(avaliadorId)
                 .orElseThrow(() -> new RuntimeException("Usuário avaliador não encontrado com ID: " + avaliadorId));
+
+        boolean temPermissao = avaliador.possuiPerfil(PerfilAcesso.ADMINISTRADOR) || avaliador.possuiPerfil(PerfilAcesso.COLABORADOR);
+
+        if (!temPermissao){
+            throw new IllegalArgumentException("O utilizador não possui permissão para aprovar reservas");
+        }
+
+        if (solicitacao.getSolicitante().getId().equals(avaliador.getId())){
+            throw new IllegalArgumentException("O solicitante não pode avaliar seu próprio pedido de reserva");
+        }
+
+        boolean conflito = reservaRepository.existeConflitoHorario(
+            solicitacao.getEspaco().getId(),
+            solicitacao.getDataUtilizacao(),
+            solicitacao.getHoraInicio(),
+            solicitacao.getHoraFim()
+        );
+
+        if (conflito){
+            throw new IllegalStateException("Não é possível aprovar, já existe outra reserva aprovada para este mesmo espaço e horário");
+        }
 
         solicitacao.aprovar(avaliador);
         SolicitacaoReserva salva = reservaRepository.save(solicitacao);
