@@ -1,0 +1,3 @@
+[2026-10-14 23:02:39] AÇÃO: CADASTRAR_RESERVA | ENTIDADE: SolicitacaoReserva | USUÁRIO: Usuário de Teste (Matrícula: TESTE-999)
+[2026-10-14 23:04:09] AÇÃO: CADASTRAR_RESERVA | ENTIDADE: SolicitacaoReserva | USUÁRIO: Usuário de Teste (Matrícula: TESTE-999)
+[2026-10-14 23:05:26] AÇÃO: APROVAR_RESERVA | ENTIDADE: SolicitacaoReserva | USUÁRIO: Usuário de Teste (Matrícula: TESTE-999)
