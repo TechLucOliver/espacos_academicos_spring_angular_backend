@@ -5,6 +5,7 @@ import com.controle.espacos.academicos.espacos_academicos.dto.solicitacao_reserv
 import com.controle.espacos.academicos.espacos_academicos.dto.solicitacao_reserva.SolicitacaoReservaRequestDTO;
 import com.controle.espacos.academicos.espacos_academicos.dto.solicitacao_reserva.SolicitacaoReservaResponseDTO;
 import com.controle.espacos.academicos.espacos_academicos.enums.PerfilAcesso;
+import com.controle.espacos.academicos.espacos_academicos.enums.StatusEspaco;
 import com.controle.espacos.academicos.espacos_academicos.enums.StatusSolicitacao;
 import com.controle.espacos.academicos.espacos_academicos.model.EspacoAcademico;
 import com.controle.espacos.academicos.espacos_academicos.model.Usuario;
@@ -120,8 +121,13 @@ public class SolicitacaoReservaService {
             throw new IllegalArgumentException("O solicitante não pode avaliar seu próprio pedido de reserva");
         }
 
+        EspacoAcademico espaco = solicitacao.getEspaco();
+        if (espaco.getStatus() != StatusEspaco.DISPONIVEL){
+            throw new IllegalStateException("O espaço acadêmico não está disponível para receber reservas (Status atual: " + espaco.getStatus() + ")");
+        }
+
         boolean conflito = reservaRepository.existeConflitoHorario(
-            solicitacao.getEspaco().getId(),
+            espaco.getId(),
             solicitacao.getDataUtilizacao(),
             solicitacao.getHoraInicio(),
             solicitacao.getHoraFim()
@@ -132,6 +138,10 @@ public class SolicitacaoReservaService {
         }
 
         solicitacao.aprovar(avaliador);
+
+        espaco.setStatus(StatusEspaco.INDISPONIVEL);
+        espacoRepository.save(espaco);
+
         SolicitacaoReserva salva = reservaRepository.save(solicitacao);
         return SolicitacaoReservaResponseDTO.fromEntity(salva);
     }
@@ -157,6 +167,11 @@ public class SolicitacaoReservaService {
                 .orElseThrow(() -> new RuntimeException("Solicitação de reserva não encontrada com o ID: " + id));
 
         solicitacao.finalizarUso();
+
+        EspacoAcademico espaco = solicitacao.getEspaco();
+        espaco.setStatus(StatusEspaco.DISPONIVEL);
+        espacoRepository.save(espaco);
+
         SolicitacaoReserva salva = reservaRepository.save(solicitacao);
         return SolicitacaoReservaResponseDTO.fromEntity(salva);
     }
