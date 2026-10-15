@@ -6,6 +6,8 @@ import com.controle.espacos.academicos.espacos_academicos.repository.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -26,9 +28,14 @@ public class InicializadorDados {
      * @return Instância de {@link CommandLineRunner} executada no bootstrap do Spring.
      */
     @Bean
-    CommandLineRunner iniciarDB(InstituicaoEnsinoSuperiorRepository iesRepositorio, CentroAcademicoRepository centroAcademicoRepository,
-                                CursoRepository cursoRepository, EspacoAcademicoRepository espacoRepository, LaboratorioRepository laboratorioRepository,
-                                SoftwareRepository softwareRepository, UsuarioRepository usuarioRepository){
+    CommandLineRunner iniciarDB(InstituicaoEnsinoSuperiorRepository iesRepositorio,
+                                CentroAcademicoRepository centroAcademicoRepository,
+                                CursoRepository cursoRepository,
+                                EspacoAcademicoRepository espacoRepository,
+                                LaboratorioRepository laboratorioRepository,
+                                SoftwareRepository softwareRepository,
+                                UsuarioRepository usuarioRepository,
+                                PasswordEncoder passwordEncoder){
         return args -> {
           if (iesRepositorio.count() == 0){
               InstituicaoEnsinoSuperior ucsal = InstituicaoEnsinoSuperior.builder()
@@ -137,7 +144,7 @@ public class InicializadorDados {
                       .nomeCompleto("Administrador Geral")
                       .email("admin@ucsal.br")
                       .telefone("71988887777")
-                      .senha("admin123")
+                      .senha(passwordEncoder.encode("admin123"))
                       .dataCadastramento(LocalDate.now())
                       .status(StatusCadastro.ATIVO)
                       .centroAcademico(ccetSalvo)
@@ -149,7 +156,7 @@ public class InicializadorDados {
                       .nomeCompleto("Prof. Carlos Eduardo")
                       .email("carlos.docente@ucsal.br")
                       .telefone("71977776666")
-                      .senha("docente123")
+                      .senha(passwordEncoder.encode("docente123"))
                       .dataCadastramento(LocalDate.now())
                       .status(StatusCadastro.ATIVO)
                       .centroAcademico(ccetSalvo)

@@ -8,7 +8,6 @@ public class EspacosAcademicosApplication {
 
 	static void main(String[] args) {
 		SpringApplication.run(EspacosAcademicosApplication.class, args);
-		//db url = jdbc:h2:mem:espacosdb
 	}
 
 }
