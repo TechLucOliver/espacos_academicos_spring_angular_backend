@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,6 +28,7 @@ public class SolicitacaoSoftwareController {
      * Submete um novo pedido de instalação de software para um laboratório.
      */
     @PostMapping
+    @PreAuthorize("hasAnyRole('USUARIO', 'ADMINISTRADOR')")
     public ResponseEntity<SolicitacaoSoftwareResponseDTO> solicitar(@Valid @RequestBody SolicitacaoSoftwareRequestDTO dto) {
         SolicitacaoSoftwareResponseDTO resposta = solicitacaoSoftwareService.solicitar(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(resposta);
@@ -36,6 +38,7 @@ public class SolicitacaoSoftwareController {
      * Lista todas as solicitações de software, permitindo filtro opcional por status.
      */
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'COLABORADOR', 'USUARIO')")
     public ResponseEntity<List<SolicitacaoSoftwareResponseDTO>> listarTodas(@RequestParam(required = false) StatusSolicitacao status) {
         if (status != null) {
             return ResponseEntity.ok(solicitacaoSoftwareService.listarPorStatus(status));
@@ -47,6 +50,7 @@ public class SolicitacaoSoftwareController {
      * Busca uma solicitação de software pelo seu ID.
      */
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'COLABORADOR', 'USUARIO')")
     public ResponseEntity<SolicitacaoSoftwareResponseDTO> buscarPorId(@PathVariable Long id) {
         return ResponseEntity.ok(solicitacaoSoftwareService.buscarPorId(id));
     }
@@ -55,6 +59,7 @@ public class SolicitacaoSoftwareController {
      * Lista as solicitações de software associadas a um determinado laboratório.
      */
     @GetMapping("/laboratorio/{laboratorioId}")
+    @PreAuthorize("hasAnyRole('USUARIO', 'COLABORADOR', 'ADMINISTRADOR')")
     public ResponseEntity<List<SolicitacaoSoftwareResponseDTO>> listarPorLaboratorio(@PathVariable Long laboratorioId) {
         return ResponseEntity.ok(solicitacaoSoftwareService.listarPorLaboratorio(laboratorioId));
     }
@@ -63,6 +68,7 @@ public class SolicitacaoSoftwareController {
      * Lista as solicitações de software efetuadas por um docente/solicitante específico.
      */
     @GetMapping("/solicitante/{solicitanteId}")
+    @PreAuthorize("hasAnyRole('USUARIO', 'COLABORADOR', 'ADMINISTRADOR')")
     public ResponseEntity<List<SolicitacaoSoftwareResponseDTO>> listarPorSolicitante(@PathVariable Long solicitanteId) {
         return ResponseEntity.ok(solicitacaoSoftwareService.listarPorSolicitante(solicitanteId));
     }
@@ -71,6 +77,7 @@ public class SolicitacaoSoftwareController {
      * Aprova uma solicitação de instalação de software.
      */
     @PatchMapping("/{id}/aprovar")
+    @PreAuthorize("hasAnyRole('COLABORADOR', 'ADMINISTRADOR')")
     public ResponseEntity<SolicitacaoSoftwareResponseDTO> aprovar(
             @PathVariable Long id,
             @RequestParam Long avaliadorId) {
@@ -81,6 +88,7 @@ public class SolicitacaoSoftwareController {
      * Reprova uma solicitação de instalação de software com justificativa técnica.
      */
     @PatchMapping("/{id}/reprovar")
+    @PreAuthorize("hasAnyRole('COLABORADOR', 'ADMINISTRADOR')")
     public ResponseEntity<SolicitacaoSoftwareResponseDTO> reprovar(
             @PathVariable Long id,
             @Valid @RequestBody ReprovarSolicitacaoSoftwareDTO dto) {

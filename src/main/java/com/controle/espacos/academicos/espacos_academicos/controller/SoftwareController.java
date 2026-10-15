@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,9 +18,6 @@ import java.util.List;
  * <p>
  * Mapeado sob {@code /api/softwares}.
  * </p>
- *
- * @author Equipe de Desenvolvimento
- * @version 1.0
  */
 @RestController
 @RequestMapping("/api/softwares")
@@ -35,6 +33,7 @@ public class SoftwareController {
      * @return {@link ResponseEntity} com o software cadastrado e código HTTP 201 (Created).
      */
     @PostMapping
+    @PreAuthorize("hasAnyRole('COLABORADOR', 'ADMINISTRADOR')")
     public ResponseEntity<SoftwareResponseDTO> cadastrar(@Valid @RequestBody SoftwareRequestDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(softwareService.cadastrar(dto));
     }
@@ -45,6 +44,7 @@ public class SoftwareController {
      * @return {@link ResponseEntity} com a lista de softwares e código HTTP 200 (OK).
      */
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'COLABORADOR', 'USUARIO')")
     public ResponseEntity<List<SoftwareResponseDTO>> listarTodos() {
         return ResponseEntity.ok(softwareService.listarTodos());
     }
@@ -56,6 +56,7 @@ public class SoftwareController {
      * @return {@link ResponseEntity} com os dados do software e código HTTP 200 (OK).
      */
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'COLABORADOR', 'USUARIO')")
     public ResponseEntity<SoftwareResponseDTO> buscarPorId(@PathVariable Long id) {
         return ResponseEntity.ok(softwareService.buscarPorId(id));
     }
@@ -67,6 +68,7 @@ public class SoftwareController {
      * @return {@link ResponseEntity} com a lista filtrada e código HTTP 200 (OK).
      */
     @GetMapping("/tipo/{tipo}")
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'COLABORADOR', 'USUARIO')")
     public ResponseEntity<List<SoftwareResponseDTO>> listarPorTipo(@PathVariable TipoSoftware tipo) {
         return ResponseEntity.ok(softwareService.listarPorTipo(tipo));
     }
@@ -79,6 +81,7 @@ public class SoftwareController {
      * @return {@link ResponseEntity} com o software atualizado e código HTTP 200 (OK).
      */
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('COLABORADOR', 'ADMINISTRADOR')")
     public ResponseEntity<SoftwareResponseDTO> editar(
             @PathVariable Long id,
             @Valid @RequestBody SoftwareRequestDTO dto) {
