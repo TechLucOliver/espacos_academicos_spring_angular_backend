@@ -4,8 +4,10 @@ import com.controle.espacos.academicos.espacos_academicos.dto.curso.CursoRequest
 import com.controle.espacos.academicos.espacos_academicos.dto.curso.CursoResponseDTO;
 import com.controle.espacos.academicos.espacos_academicos.service.CursoService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,22 +18,12 @@ import java.util.List;
  * Mapeado sob o caminho base {@code /api/cursos}.
  * </p>
  *
- * @author Equipe de Desenvolvimento
- * @version 1.0
  */
 @RestController
 @RequestMapping("/api/cursos")
+@RequiredArgsConstructor
 public class CursoController {
     private final CursoService cursoService;
-
-    /**
-     * Construtor para injeção do serviço de domínio de Cursos.
-     *
-     * @param cursoService Serviço contendo as regras de negócio de Cursos.
-     */
-    public CursoController(CursoService cursoService) {
-        this.cursoService = cursoService;
-    }
 
     /**
      * Endpoint para listagem de todos os cursos cadastrados.
@@ -39,6 +31,7 @@ public class CursoController {
      * @return Lista de cursos e código HTTP 200 (OK).
      */
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'COLABORADOR', 'USUARIO')")
     public ResponseEntity<List<CursoResponseDTO>> listarTodos(){
         return ResponseEntity.ok(cursoService.listarTodos());
     }
@@ -50,6 +43,7 @@ public class CursoController {
      * @return Dados do curso e código HTTP 200 (OK).
      */
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'COLABORADOR', 'USUARIO')")
     public ResponseEntity<CursoResponseDTO> buscarPorId(@PathVariable Long id){
         return ResponseEntity.ok(cursoService.buscarPorId(id));
     }
@@ -61,6 +55,7 @@ public class CursoController {
      * @return Lista de cursos filtrados e código HTTP 200 (OK).
      */
     @GetMapping("/centro-academico/{centroAcademicoId}")
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'COLABORADOR', 'USUARIO')")
     public ResponseEntity<List<CursoResponseDTO>> listarPorCentroAcademico(@PathVariable Long centroAcademicoId){
         return ResponseEntity.ok(cursoService.listarPorCentroAcademico(centroAcademicoId));
     }
@@ -72,6 +67,7 @@ public class CursoController {
      * @return Curso criado e código HTTP 201 (Created).
      */
     @PostMapping
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     public ResponseEntity<CursoResponseDTO> cadastrar(@Valid @RequestBody CursoRequestDTO requestDTO){
         CursoResponseDTO responseDTO = cursoService.cadastrar(requestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
@@ -85,6 +81,7 @@ public class CursoController {
      * @return Curso atualizado e código HTTP 200 (OK).
      */
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     public ResponseEntity<CursoResponseDTO> editar(@PathVariable Long id, @Valid @RequestBody CursoRequestDTO requestDTO){
         CursoResponseDTO cursoAtualizado = cursoService.editar(id, requestDTO);
         return ResponseEntity.ok(cursoAtualizado);
@@ -97,6 +94,7 @@ public class CursoController {
      * @return Resposta sem corpo e código HTTP 204 (No Content).
      */
     @PatchMapping("/{id}/inativar")
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     public ResponseEntity<Void> inativar(@PathVariable Long id){
         cursoService.inativar(id);
         return ResponseEntity.noContent().build();
@@ -109,6 +107,7 @@ public class CursoController {
      * @return Resposta sem corpo e código HTTP 204 (No Content).
      */
     @PatchMapping("/{id}/reativar")
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     public ResponseEntity<CursoResponseDTO> reativar(@PathVariable Long id){
         cursoService.reativar(id);
         return ResponseEntity.noContent().build();

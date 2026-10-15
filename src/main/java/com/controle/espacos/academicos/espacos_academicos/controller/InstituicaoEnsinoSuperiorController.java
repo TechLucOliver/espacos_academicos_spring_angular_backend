@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -35,6 +36,7 @@ public class    InstituicaoEnsinoSuperiorController {
      * @return {@link ResponseEntity} com a instituição cadastrada e status HTTP 201 (Created).
      */
     @PostMapping
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     public ResponseEntity<InstituicaoEnsinoSuperiorResponseDTO> cadastrar(@Valid @RequestBody InstituicaoEnsinoSuperiorRequestDTO requestDTO){
         InstituicaoEnsinoSuperiorResponseDTO responseCriada = iesService.cadastrar(requestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseCriada);
@@ -48,6 +50,7 @@ public class    InstituicaoEnsinoSuperiorController {
      * @return {@link ResponseEntity} com os dados atualizados e status HTTP 200 (OK).
      */
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     public ResponseEntity<InstituicaoEnsinoSuperiorResponseDTO> editar(@PathVariable Long id, @Valid @RequestBody InstituicaoEnsinoSuperiorRequestDTO requestDTO){
         InstituicaoEnsinoSuperiorResponseDTO instituicaoAtualizada = iesService.editar(id, requestDTO);
         return  ResponseEntity.ok(instituicaoAtualizada);
@@ -59,6 +62,7 @@ public class    InstituicaoEnsinoSuperiorController {
      * @return {@link ResponseEntity} contendo a lista de IES e status HTTP 200 (OK).
      */
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'COLABORADOR', 'USUARIO')")
     public ResponseEntity<List<InstituicaoEnsinoSuperiorResponseDTO>> listarTodas(){
         return ResponseEntity.ok(iesService.listarTodas());
     }
@@ -70,6 +74,7 @@ public class    InstituicaoEnsinoSuperiorController {
      * @return {@link ResponseEntity} com os dados da instituição e status HTTP 200 (OK).
      */
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'COLABORADOR', 'USUARIO')")
     public ResponseEntity<InstituicaoEnsinoSuperiorResponseDTO> buscarPorId(@PathVariable Long id){
         return ResponseEntity.ok(iesService.buscarPorId(id));
     }
@@ -81,6 +86,7 @@ public class    InstituicaoEnsinoSuperiorController {
      * @return {@link ResponseEntity} sem corpo com status HTTP 204 (No Content).
      */
     @PatchMapping("/{id}/inativar")
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     public ResponseEntity<Void> inativar(@PathVariable Long id){
         iesService.inativar(id);
         return ResponseEntity.noContent().build();
@@ -93,6 +99,7 @@ public class    InstituicaoEnsinoSuperiorController {
      * @return Resposta sem corpo com código HTTP 204 (No Content).
      */
     @PatchMapping("/{id}/reativar")
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     public ResponseEntity<Void> reativar(@PathVariable Long id) {
         iesService.reativar(id);
         return ResponseEntity.noContent().build();

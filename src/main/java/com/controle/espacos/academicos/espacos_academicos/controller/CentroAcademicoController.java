@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,6 +24,7 @@ public class CentroAcademicoController {
      * @return Centro Acadêmico criado e código HTTP 201 (Created).
      */
     @PostMapping
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     public ResponseEntity<CentroAcademicoResponseDTO> cadastrar(@Valid @RequestBody CentroAcademicoRequestDTO requestDTO){
         CentroAcademicoResponseDTO responseDTO = centroAcademicoService.cadastrar(requestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
@@ -36,6 +38,7 @@ public class CentroAcademicoController {
      * @return Dados atualizados e código HTTP 200 (OK).
      */
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     public ResponseEntity<CentroAcademicoResponseDTO> editar(@PathVariable Long id, @Valid @RequestBody CentroAcademicoRequestDTO requestDTO){
         CentroAcademicoResponseDTO centroAtualizado = centroAcademicoService.editar(id, requestDTO);
         return ResponseEntity.ok(centroAtualizado);
@@ -47,6 +50,7 @@ public class CentroAcademicoController {
      * @return Lista de Centros Acadêmicos e código HTTP 200 (OK).
      */
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'COLABORADOR', 'USUARIO')")
     public ResponseEntity<List<CentroAcademicoResponseDTO>> listarTodos(){
         return ResponseEntity.ok(centroAcademicoService.listarTodos());
     }
@@ -58,6 +62,7 @@ public class CentroAcademicoController {
      * @return Lista de Centros Acadêmicos filtrados por IES e código HTTP 200 (OK).
      */
     @GetMapping("/ies/{iesId}")
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'COLABORADOR', 'USUARIO')")
     public ResponseEntity<List<CentroAcademicoResponseDTO>> listarPorInstituicao(@PathVariable Long iesId){
         return ResponseEntity.ok(centroAcademicoService.listarPorInstituicao(iesId));
     }
@@ -69,6 +74,7 @@ public class CentroAcademicoController {
      * @return Dados do Centro Acadêmico e código HTTP 200 (OK).
      */
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'COLABORADOR', 'USUARIO')")
     public ResponseEntity<CentroAcademicoResponseDTO> buscarPorId(@PathVariable Long id){
         return ResponseEntity.ok(centroAcademicoService.buscarPorId(id));
     }
@@ -80,6 +86,7 @@ public class CentroAcademicoController {
      * @return Resposta sem corpo e código HTTP 204 (No Content).
      */
     @PatchMapping("/{id}/inativar")
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     public ResponseEntity<Void> inativar(@PathVariable Long id){
         centroAcademicoService.inativar(id);
         return ResponseEntity.noContent().build();
@@ -92,6 +99,7 @@ public class CentroAcademicoController {
      * @return Resposta sem corpo com código HTTP 204 (No Content).
      */
     @PatchMapping("/{id}/reativar")
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     public ResponseEntity<Void> reativar(@PathVariable Long id) {
         centroAcademicoService.reativar(id);
         return ResponseEntity.noContent().build();

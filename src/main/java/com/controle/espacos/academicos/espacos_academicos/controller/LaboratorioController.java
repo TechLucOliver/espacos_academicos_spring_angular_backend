@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,6 +30,7 @@ public class LaboratorioController {
      * @return {@link ResponseEntity} com a relação de todos os laboratórios e código HTTP 200 (OK).
      */
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'COLABORADOR', 'USUARIO')")
     public ResponseEntity<List<LaboratorioResponseDTO>> listarTodos() {
         return ResponseEntity.ok(labService.listarTodos());
     }
@@ -40,6 +42,7 @@ public class LaboratorioController {
      * @return {@link ResponseEntity} com os dados consolidados do laboratório e código HTTP 200 (OK).
      */
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'COLABORADOR', 'USUARIO')")
     public ResponseEntity<LaboratorioResponseDTO> buscarPorId(@PathVariable Long id) {
         return ResponseEntity.ok(labService.buscarPorId(id));
     }
@@ -51,6 +54,7 @@ public class LaboratorioController {
      * @return {@link ResponseEntity} com a lista de laboratórios vinculados e código HTTP 200 (OK).
      */
     @GetMapping("/centro-academico/{centroAcademicoId}")
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'COLABORADOR', 'USUARIO')")
     public ResponseEntity<List<LaboratorioResponseDTO>> listarPorCentroAcademico(@PathVariable Long centroAcademicoId) {
         return ResponseEntity.ok(labService.listarPorCentroAcademico(centroAcademicoId));
     }
@@ -62,6 +66,7 @@ public class LaboratorioController {
      * @return {@link ResponseEntity} contendo o laboratório persistido e o código HTTP 201 (Created).
      */
     @PostMapping
+    @PreAuthorize("hasAnyRole('COLABORADOR', 'ADMINISTRADOR')")
     public ResponseEntity<LaboratorioResponseDTO> cadastrar(@Valid @RequestBody LaboratorioRequestDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(labService.cadastrar(dto));
     }
@@ -74,6 +79,7 @@ public class LaboratorioController {
      * @return {@link ResponseEntity} com os dados atualizados e código HTTP 200 (OK).
      */
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('COLABORADOR', 'ADMINISTRADOR')")
     public ResponseEntity<LaboratorioResponseDTO> editar(
             @PathVariable Long id,
             @Valid @RequestBody LaboratorioRequestDTO dto) {
@@ -87,6 +93,7 @@ public class LaboratorioController {
      * @return {@link ResponseEntity} sem conteúdo e código HTTP 204 (No Content).
      */
     @PatchMapping("/{id}/manutencao")
+    @PreAuthorize("hasAnyRole('COLABORADOR', 'ADMINISTRADOR')")
     public ResponseEntity<Void> colocarEmManutencao(@PathVariable Long id) {
         labService.colocarEmManutencao(id);
         return ResponseEntity.noContent().build();
@@ -99,6 +106,7 @@ public class LaboratorioController {
      * @return {@link ResponseEntity} sem conteúdo e código HTTP 204 (No Content).
      */
     @PatchMapping("/{id}/liberar")
+    @PreAuthorize("hasAnyRole('COLABORADOR', 'ADMINISTRADOR')")
     public ResponseEntity<Void> liberarManutencao(@PathVariable Long id) {
         labService.liberarManutencao(id);
         return ResponseEntity.noContent().build();
@@ -111,6 +119,7 @@ public class LaboratorioController {
      * @return Lista de softwares instalados com código HTTP 200 (OK).
      */
     @GetMapping("/{id}/softwares")
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'COLABORADOR', 'USUARIO')")
     public ResponseEntity<List<SoftwareResponseDTO>> listarSoftwares(@PathVariable Long id) {
         return ResponseEntity.ok(labService.listarSoftwaresDoLaboratorio(id));
     }
@@ -123,6 +132,7 @@ public class LaboratorioController {
      * @return Resposta sem corpo e código HTTP 204 (No Content).
      */
     @PostMapping("/{id}/softwares/{softwareId}")
+    @PreAuthorize("hasAnyRole('COLABORADOR', 'ADMINISTRADOR')")
     public ResponseEntity<Void> instalarSoftware(@PathVariable Long id, @PathVariable Long softwareId) {
         labService.instalarSoftware(id, softwareId);
         return ResponseEntity.noContent().build();
@@ -136,6 +146,7 @@ public class LaboratorioController {
      * @return Resposta sem corpo e código HTTP 204 (No Content).
      */
     @DeleteMapping("/{id}/softwares/{softwareId}")
+    @PreAuthorize("hasAnyRole('COLABORADOR', 'ADMINISTRADOR')")
     public ResponseEntity<Void> desinstalarSoftware(@PathVariable Long id, @PathVariable Long softwareId) {
         labService.desinstalarSoftware(id, softwareId);
         return ResponseEntity.noContent().build();
