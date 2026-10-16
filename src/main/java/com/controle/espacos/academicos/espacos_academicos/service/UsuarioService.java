@@ -66,7 +66,6 @@ public class UsuarioService {
         CentroAcademico centroAcademico = centroRepository.findById(requestDTO.centroAcademicoId())
                 .orElseThrow(() -> new RuntimeException("Centro Acadêmico não encontrado com ID: " + requestDTO.centroAcademicoId()));
 
-        //lembrar de fazer a criptografia da senha
         Usuario usuario = Usuario.builder()
                 .matricula(requestDTO.matricula())
                 .nomeCompleto(requestDTO.nomeCompleto())
