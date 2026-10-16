@@ -117,7 +117,9 @@ public class SolicitacaoReservaService {
             throw new IllegalArgumentException("O utilizador não possui permissão para aprovar reservas");
         }
 
-        if (solicitacao.getSolicitante().getId().equals(avaliador.getId())){
+        boolean isAdmin = avaliador.getPerfis().contains(PerfilAcesso.ADMINISTRADOR);
+
+        if (solicitacao.getSolicitante().getId().equals(avaliador.getId()) && !isAdmin){
             throw new IllegalArgumentException("O solicitante não pode avaliar seu próprio pedido de reserva");
         }
 
@@ -154,6 +156,12 @@ public class SolicitacaoReservaService {
 
         Usuario avaliador = usuarioRepository.findById(dto.avaliadorId())
                 .orElseThrow(() -> new RuntimeException("Usuário avaliador não encontrado com ID: " + dto.avaliadorId()));
+
+        boolean isAdmin = avaliador.getPerfis().contains(PerfilAcesso.ADMINISTRADOR);
+
+        if (solicitacao.getSolicitante().getId().equals(avaliador.getId()) && !isAdmin){
+            throw new IllegalArgumentException("O solicitante não pode avaliar seu próprio pedido de reserva");
+        }
 
         solicitacao.reprovar(avaliador, dto.motivo());
         SolicitacaoReserva salva = reservaRepository.save(solicitacao);

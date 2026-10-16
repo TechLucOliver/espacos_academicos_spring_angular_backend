@@ -148,7 +148,7 @@ public class InicializadorDados {
                       .dataCadastramento(LocalDate.now())
                       .status(StatusCadastro.ATIVO)
                       .centroAcademico(ccetSalvo)
-                      .perfis(Set.of(PerfilAcesso.ADMINISTRADOR))
+                      .perfis(Set.of(PerfilAcesso.ADMINISTRADOR, PerfilAcesso.COLABORADOR, PerfilAcesso.USUARIO))
                       .build();
 
               Usuario professor = Usuario.builder()

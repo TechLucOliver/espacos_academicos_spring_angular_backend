@@ -12,6 +12,7 @@ import com.controle.espacos.academicos.espacos_academicos.repository.CentroAcade
 import com.controle.espacos.academicos.espacos_academicos.repository.LogAuditoriaRepository;
 import com.controle.espacos.academicos.espacos_academicos.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +26,7 @@ public class UsuarioService {
     private final UsuarioRepository usuarioRepository;
     private final CentroAcademicoRepository centroRepository;
     private final LogAuditoriaRepository logAuditoriaRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional(readOnly = true)
     public List<UsuarioResponseDTO> listarTodos(){
@@ -70,7 +72,7 @@ public class UsuarioService {
                 .nomeCompleto(requestDTO.nomeCompleto())
                 .email(requestDTO.email())
                 .telefone(requestDTO.telefone())
-                .senha(requestDTO.senha())
+                .senha(passwordEncoder.encode(requestDTO.senha()))
                 .dataCadastramento(LocalDate.now())
                 .status(StatusCadastro.ATIVO)
                 .centroAcademico(centroAcademico)

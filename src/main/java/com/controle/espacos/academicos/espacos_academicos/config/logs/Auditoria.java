@@ -3,10 +3,13 @@ package com.controle.espacos.academicos.espacos_academicos.config.logs;
 import com.controle.espacos.academicos.espacos_academicos.model.Usuario;
 import com.controle.espacos.academicos.espacos_academicos.model.log.LogAuditoria;
 import com.controle.espacos.academicos.espacos_academicos.repository.LogAuditoriaRepository;
+import com.controle.espacos.academicos.espacos_academicos.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -22,7 +25,8 @@ import java.time.format.DateTimeFormatter;
 @RequiredArgsConstructor
 public class Auditoria {
 
-    private final LogAuditoriaRepository repository;
+    private final LogAuditoriaRepository logRepository;
+    private final UsuarioRepository usuarioRepository;
 
     @AfterReturning(pointcut = "@annotation(auditavel)", returning = "resultado")
     public void registrarLog(JoinPoint joinPoint, Auditavel auditavel, Object resultado) {
@@ -31,24 +35,32 @@ public class Auditoria {
         String nome = classe.getSimpleName();
         String entidade = nome.replace("Service", "");
 
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Usuario usuario = null;
 
-        Usuario usuario = Usuario.builder()
-                .id(1L)
-                .nomeCompleto("Usuário de Teste")
-                .matricula("TESTE-999")
-                .build();
+        if(auth != null && auth.isAuthenticated() && !"anonymousUser".equals(auth.getPrincipal())){
+            String login = auth.getName();
 
-        LocalDateTime dataHora = LocalDateTime.now();
+            usuario = usuarioRepository.findByEmailOrMatricula(login).orElse(null);
 
-        LogAuditoria log = LogAuditoria.builder()
-                .dataHora(dataHora)
-                .acao(auditavel.acao())
-                .entidade(entidade)
-                .usuario(usuario)
-                .build();
+            if(usuario == null){
+                usuario = usuarioRepository.findAll().stream().findFirst().orElse(null);
+            }
 
-        repository.save(log);
-        arquivo(dataHora, auditavel.acao(), entidade, usuario);
+            if(usuario != null){
+                LocalDateTime dataHora = LocalDateTime.now();
+
+                LogAuditoria log = LogAuditoria.builder()
+                        .dataHora(dataHora)
+                        .acao(auditavel.acao())
+                        .entidade(entidade)
+                        .usuario(usuario)
+                        .build();
+
+                logRepository.save(log);
+                arquivo(dataHora, auditavel.acao(), entidade, usuario);
+            }
+        }
     }
 
     private void arquivo(LocalDateTime dataHora, String acao, String entidade, Usuario usuario) {
