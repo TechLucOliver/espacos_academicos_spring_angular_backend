@@ -183,4 +183,23 @@ public class SolicitacaoReservaService {
         SolicitacaoReserva salva = reservaRepository.save(solicitacao);
         return SolicitacaoReservaResponseDTO.fromEntity(salva);
     }
+
+    /**
+     * Cancela e remove uma solicitação de reserva pendente submetida pelo docente.
+     *
+     * @param id Identificador da solicitação a cancelar.
+     */
+    @Transactional
+    @Auditavel(acao = "CANCELAR_RESERVA")
+    public void cancelar(Long id) {
+        SolicitacaoReserva solicitacao = reservaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Solicitação de reserva não encontrada com o ID: " + id));
+
+        // Regra de negócio: só é permitido cancelar pedidos que ainda não foram avaliados
+        if (solicitacao.getStatus() != StatusSolicitacao.PENDENTE) {
+            throw new IllegalStateException("Apenas solicitações com status PENDENTE podem ser canceladas.");
+        }
+
+        reservaRepository.delete(solicitacao);
+    }
 }

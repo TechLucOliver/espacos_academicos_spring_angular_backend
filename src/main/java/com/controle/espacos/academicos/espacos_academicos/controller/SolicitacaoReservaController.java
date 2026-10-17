@@ -108,8 +108,15 @@ public class SolicitacaoReservaController {
      * Endpoint para finalizar o uso do espaço reservado.
      */
     @PatchMapping("/{id}/finalizar")
-    @PreAuthorize("hasAnyRole('USUARIO', 'ADMINISTRADOR')")
+    @PreAuthorize("hasAnyRole('COLABORADOR', 'ADMINISTRADOR', 'USUARIO')")
     public ResponseEntity<SolicitacaoReservaResponseDTO> finalizarUso(@PathVariable Long id) {
         return ResponseEntity.ok(reservaService.finalizarUso(id));
+    }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('USUARIO', 'ADMINISTRADOR')")
+    public ResponseEntity<Void> cancelar(@PathVariable Long id) {
+        reservaService.cancelar(id);
+        return ResponseEntity.noContent().build();
     }
 }

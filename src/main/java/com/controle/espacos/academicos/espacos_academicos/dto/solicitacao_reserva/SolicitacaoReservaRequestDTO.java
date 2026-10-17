@@ -17,7 +17,7 @@ import java.time.LocalTime;
 
 public record SolicitacaoReservaRequestDTO(
         @NotNull(message = "A data de utilizaçõa é obrigatória.")
-        @FutureOrPresent(message = "A data de utilização deve ser hohe ou uma data futura.")
+        @FutureOrPresent(message = "A data de utilização deve ser hoje ou uma data futura.")
         LocalDate dataUtilizacao,
 
         @NotNull(message = "O horário de início é obrigatório.")
