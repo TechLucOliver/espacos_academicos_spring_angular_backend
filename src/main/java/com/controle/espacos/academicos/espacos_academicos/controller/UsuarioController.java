@@ -3,6 +3,7 @@ package com.controle.espacos.academicos.espacos_academicos.controller;
 import com.controle.espacos.academicos.espacos_academicos.dto.usuario.InativarUsuarioRequestDTO;
 import com.controle.espacos.academicos.espacos_academicos.dto.usuario.UsuarioRequestDTO;
 import com.controle.espacos.academicos.espacos_academicos.dto.usuario.UsuarioResponseDTO;
+import com.controle.espacos.academicos.espacos_academicos.dto.usuario.UsuarioUpdateRequestDTO;
 import com.controle.espacos.academicos.espacos_academicos.enums.StatusCadastro;
 import com.controle.espacos.academicos.espacos_academicos.service.UsuarioService;
 import jakarta.validation.Valid;
@@ -62,7 +63,7 @@ public class UsuarioController {
      */
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMINISTRADOR')")
-    public ResponseEntity<UsuarioResponseDTO> editar(@PathVariable Long id, @Valid @RequestBody UsuarioRequestDTO requestDTO){
+    public ResponseEntity<UsuarioResponseDTO> editar(@PathVariable Long id, @Valid @RequestBody UsuarioUpdateRequestDTO requestDTO){
         return ResponseEntity.ok(usuarioService.editar(id, requestDTO));
     }
 

@@ -4,6 +4,7 @@ import com.controle.espacos.academicos.espacos_academicos.config.logs.Auditavel;
 import com.controle.espacos.academicos.espacos_academicos.dto.usuario.InativarUsuarioRequestDTO;
 import com.controle.espacos.academicos.espacos_academicos.dto.usuario.UsuarioRequestDTO;
 import com.controle.espacos.academicos.espacos_academicos.dto.usuario.UsuarioResponseDTO;
+import com.controle.espacos.academicos.espacos_academicos.dto.usuario.UsuarioUpdateRequestDTO;
 import com.controle.espacos.academicos.espacos_academicos.enums.StatusCadastro;
 import com.controle.espacos.academicos.espacos_academicos.model.CentroAcademico;
 import com.controle.espacos.academicos.espacos_academicos.model.Usuario;
@@ -84,7 +85,7 @@ public class UsuarioService {
 
     @Transactional
     @Auditavel(acao = "EDITAR")
-    public UsuarioResponseDTO editar(Long id, UsuarioRequestDTO requestDTO){
+    public UsuarioResponseDTO editar(Long id, UsuarioUpdateRequestDTO requestDTO){
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado com o ID: " + id));
 
