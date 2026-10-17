@@ -1,9 +1,6 @@
 package com.controle.espacos.academicos.espacos_academicos.controller;
 
-import com.controle.espacos.academicos.espacos_academicos.dto.usuario.InativarUsuarioRequestDTO;
-import com.controle.espacos.academicos.espacos_academicos.dto.usuario.UsuarioRequestDTO;
-import com.controle.espacos.academicos.espacos_academicos.dto.usuario.UsuarioResponseDTO;
-import com.controle.espacos.academicos.espacos_academicos.dto.usuario.UsuarioUpdateRequestDTO;
+import com.controle.espacos.academicos.espacos_academicos.dto.usuario.*;
 import com.controle.espacos.academicos.espacos_academicos.enums.StatusCadastro;
 import com.controle.espacos.academicos.espacos_academicos.service.UsuarioService;
 import jakarta.validation.Valid;
@@ -86,6 +83,16 @@ public class UsuarioController {
     @PreAuthorize("hasRole('ADMINISTRADOR')")
     public ResponseEntity<Void> reativar(@PathVariable Long id){
         usuarioService.reativar(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/alterar-senha")
+    @PreAuthorize("hasAnyRole('USUARIO', 'COLABORADOR', 'ADMINISTRADOR')")
+    public ResponseEntity<Void> alterarMinhaSenha(
+            @Valid @RequestBody AlterarSenhaRequestDTO dto,
+            org.springframework.security.core.Authentication authentication) {
+
+        usuarioService.alterarSenhaPropria(authentication.getName(), dto);
         return ResponseEntity.noContent().build();
     }
 

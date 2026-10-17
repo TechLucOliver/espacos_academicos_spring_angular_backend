@@ -1,10 +1,7 @@
 package com.controle.espacos.academicos.espacos_academicos.service;
 
 import com.controle.espacos.academicos.espacos_academicos.config.logs.Auditavel;
-import com.controle.espacos.academicos.espacos_academicos.dto.usuario.InativarUsuarioRequestDTO;
-import com.controle.espacos.academicos.espacos_academicos.dto.usuario.UsuarioRequestDTO;
-import com.controle.espacos.academicos.espacos_academicos.dto.usuario.UsuarioResponseDTO;
-import com.controle.espacos.academicos.espacos_academicos.dto.usuario.UsuarioUpdateRequestDTO;
+import com.controle.espacos.academicos.espacos_academicos.dto.usuario.*;
 import com.controle.espacos.academicos.espacos_academicos.enums.StatusCadastro;
 import com.controle.espacos.academicos.espacos_academicos.model.CentroAcademico;
 import com.controle.espacos.academicos.espacos_academicos.model.Usuario;
@@ -128,6 +125,29 @@ public class UsuarioService {
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado com o ID: " + id));
 
         usuario.reativar();
+        usuarioRepository.save(usuario);
+    }
+
+    /**
+     * Altera a palavra-passe do próprio utilizador autenticado.
+     */
+    @Transactional
+    @Auditavel(acao = "ALTERAR_SENHA")
+    public void alterarSenhaPropria(String emailUtilizador, AlterarSenhaRequestDTO dto) {
+        Usuario usuario = usuarioRepository.findByEmail(emailUtilizador)
+                .orElseThrow(() -> new RuntimeException("Utilizador não encontrado com o e-mail: " + emailUtilizador));
+
+        // Valida se a palavra-passe atual confere com o hash armazenado
+        if (!passwordEncoder.matches(dto.senhaAtual(), usuario.getSenha())) {
+            throw new IllegalArgumentException("A palavra-passe atual informada está incorreta.");
+        }
+
+        // Bloqueia definição de palavra-passe idêntica à anterior
+        if (passwordEncoder.matches(dto.novaSenha(), usuario.getSenha())) {
+            throw new IllegalArgumentException("A nova palavra-passe não pode ser igual à palavra-passe atual.");
+        }
+
+        usuario.setSenha(passwordEncoder.encode(dto.novaSenha()));
         usuarioRepository.save(usuario);
     }
 }
